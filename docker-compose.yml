@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  frankenphp:
+    image: morsalin1342/frankenphp:8.4
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3
+    volumes:
+      - ./public:/app
+      - ./Caddyfile:/etc/caddy/Caddyfile

@@ -1,12 +1,14 @@
-# Use a build-time argument to specify the PHP version. Defaulting to 8.3
+# Use a build-time argument to specify the PHP version. Defaulting to 8.4
 ARG PHP_VERSION=8.4
+# Use a build-time argument to specify the Node.js version. Defaulting to 24.
+ARG NODE_VERSION=24
 
 # ==> 1. Builder Stage <==
 # This stage compiles a custom FrankenPHP binary with specific Caddy modules.
 FROM dunglas/frankenphp:builder-php${PHP_VERSION}-bookworm AS builder
 
 # Copy xcaddy from the official Caddy builder image
-COPY --from=caddy:builder /usr/bin/xcaddy /usr/bin/xcaddy
+COPY --from=caddy:2.11.4-builder /usr/bin/xcaddy /usr/bin/xcaddy
 
 # CGO must be enabled to build FrankenPHP with custom modules
 # We use xcaddy to build a new binary including the specified plugins.
@@ -39,15 +41,28 @@ FROM dunglas/frankenphp:php${PHP_VERSION}-bookworm AS runner
 # Copy the custom-built FrankenPHP binary from the builder stage
 COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
 
-# Re-declare ARG to be available in this stage
+# Re-declare ARGs to be available in subsequent build stages
 ARG PHP_VERSION
+ARG NODE_VERSION
 
 # ==> 3. Install System Dependencies & Node.js <==
 RUN set -eux; \
+    export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-        ca-certificates curl gosu unzip zip cron supervisor ffmpeg; \
-    curl -fsSL https://deb.nodesource.com/setup_24.x | bash -; \
+        ca-certificates \
+        curl \
+        default-mysql-client \
+        git \
+        gosu \
+        netcat-openbsd \
+        procps \
+        unzip \
+        zip \
+        cron \
+        supervisor \
+        ffmpeg; \
+    curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -; \
     apt-get install -y --no-install-recommends nodejs; \
     rm -rf /var/lib/apt/lists/*
 
@@ -57,14 +72,15 @@ COPY scripts/install-extensions.sh /usr/local/bin/
 COPY data/installable-extensions /tmp/
 COPY data/supported-extensions /tmp/
 RUN chmod +x /usr/local/bin/install-extensions.sh && \
-    install-extensions.sh ${PHP_VERSION} && \
+    IPE_ICU_EN_ONLY=1 install-extensions.sh ${PHP_VERSION} && \
     rm /tmp/installable-extensions /tmp/supported-extensions
 
 # ==> 5. Install Global PHP Tools <==
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.10.1 /usr/bin/composer /usr/local/bin/composer
 ADD --chmod=0755 https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/local/bin/wp
 
 # ==> 6. Configure PHP <==
+# Use the production php.ini configuration file
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 # ==> 7. Final Setup <==
