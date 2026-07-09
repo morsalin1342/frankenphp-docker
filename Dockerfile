@@ -53,11 +53,19 @@ RUN set -eux; \
         ca-certificates \
         curl \
         default-mysql-client \
+        dnsutils \
         git \
         gosu \
+        jq \
+        less \
+        libcap2-bin \
+        libnss3-tools \
+        msmtp \
+        msmtp-mta \
         netcat-openbsd \
         procps \
         unzip \
+        wget \
         zip \
         cron \
         supervisor \
@@ -82,6 +90,8 @@ ADD --chmod=0755 https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/w
 # ==> 6. Configure PHP <==
 # Use the production php.ini configuration file
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+# Drop-in conf.d snippet routing PHP's mail() through msmtp
+COPY conf.d/mail.ini /usr/local/etc/php/conf.d/mail.ini
 
 # ==> 7. Final Setup <==
 WORKDIR /app
