@@ -90,8 +90,11 @@ ADD --chmod=0755 https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/w
 # ==> 6. Configure PHP <==
 # Use the production php.ini configuration file
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-# Drop-in conf.d snippet routing PHP's mail() through msmtp
-COPY conf.d/mail.ini /usr/local/etc/php/conf.d/mail.ini
+# msmtp (and msmtp-mta) are installed above but deliberately NOT enabled here:
+# no sendmail_path is baked in, so mail() is off by default. Whatever deploys
+# this image turns mail on when it wants to — SitesPanel, for instance, sets
+# sendmail_path = "/usr/bin/msmtp -t" and writes /etc/msmtprc only once an SMTP
+# relay is configured on its outgoing-mail page.
 
 # ==> 7. Final Setup <==
 WORKDIR /app
