@@ -41,7 +41,8 @@ services:
 
 ## What's Included
 
-- **Custom Caddy** with Brotli, Mercure, Vulcain, HTTP cache (Souin), and 6 DNS challenge providers
+- **Custom Caddy** with the OWASP Coraza WAF (CRS compiled in), rate limiting,
+  AI-crawler blocking, Brotli, HTTP cache (Souin), and 6 DNS challenge providers
 - **50+ PHP extensions**: Redis, MongoDB, Swoole, Imagick, GD, Intl, AMQP, Kafka, and more
 - **Tools**: Composer, WP-CLI, Node.js 24, Supervisor, Cron, FFmpeg
 

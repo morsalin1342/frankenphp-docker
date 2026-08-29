@@ -12,7 +12,8 @@ The images are automatically built and published to [Docker Hub](https://hub.doc
 
 | Feature | Official `dunglas/frankenphp` | This Image |
 |---------|-------------------------------|------------|
-| **Caddy modules** | Minimal | 15+ plugins (Brotli, Mercure, Souin cache, 6 DNS providers) |
+| **Caddy modules** | Minimal | 16 plugins (Coraza WAF, rate limiting, Brotli, Souin cache, 6 DNS providers) |
+| **Web application firewall** | ❌ | ✅ OWASP Coraza + Core Rule Set (compiled in) |
 | **PHP extensions** | Few built-in | 50+ pre-installed (Redis, MongoDB, Swoole, Imagick, etc.) |
 | **Composer** | ❌ | ✅ Latest |
 | **WP-CLI** | ❌ | ✅ Latest |
@@ -90,9 +91,15 @@ These images come with a wide range of pre-installed components to minimize setu
 
 The `frankenphp` binary is custom-compiled with the following additional Caddy modules:
 
+*   **coraza**: OWASP Coraza WAF — ModSecurity/SecLang compatible, with the OWASP Core
+    Rule Set compiled into the binary. Use `load_owasp_crs` and the `@`-prefixed include
+    paths; there are no rule files to download or mount. Requires `order coraza_waf first`
+    in the global options.
+*   **defender**: IP-range blocking for AI crawlers, cloud provider ranges and custom
+    CIDRs. Module path is the vanity import `pkg.jsn.cam/caddy-defender`.
+*   **rate_limit**: Sliding-window rate limiting, multiple zones, keyed on any request
+    placeholder. Ordered before `basic_auth` by default.
 *   **cbrotli**: Brotli compression support.
-*   **mercure**: Server-sent events hub.
-*   **vulcain**: Linked Data API gateway.
 *   **souin**: HTTP Cache.
 *   **DNS Challenge Providers**: `vultr`, `azure`, `googleclouddns`, `digitalocean`, `cloudflare`, `route53`.
 *   **Souin Storage Providers**: `go-redis`, `otter`, `simplefs`.

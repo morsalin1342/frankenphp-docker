@@ -12,18 +12,27 @@ COPY --from=caddy:2.11.4-builder /usr/bin/xcaddy /usr/bin/xcaddy
 
 # CGO must be enabled to build FrankenPHP with custom modules
 # We use xcaddy to build a new binary including the specified plugins.
+#
+# The nomercure build tag drops the Mercure hub, which is AGPL-3.0. It is
+# required rather than optional: github.com/dunglas/frankenphp/caddy carries a
+# hard require on github.com/dunglas/mercure/caddy and imports it from
+# caddy/mercure.go, so there is no --with line to remove — without this tag the
+# hub is compiled in whatever the plugin list says. Vulcain, also AGPL-3.0,
+# needs no tag: nothing imports its caddy package once the --with line is gone,
+# so it never registers.
 RUN CGO_ENABLED=1 \
     XCADDY_SETCAP=1 \
-    XCADDY_GO_BUILD_FLAGS="-ldflags='-w -s' -tags=nobadger,nomysql,nopgx" \
+    XCADDY_GO_BUILD_FLAGS="-ldflags='-w -s' -tags=nobadger,nomysql,nopgx,nomercure" \
     CGO_CFLAGS=$(php-config --includes) \
     CGO_LDFLAGS="$(php-config --ldflags) $(php-config --libs)" \
     xcaddy build \
         --output /usr/local/bin/frankenphp \
         --with github.com/dunglas/frankenphp=./ \
         --with github.com/dunglas/frankenphp/caddy=./caddy/ \
+        --with github.com/corazawaf/coraza-caddy/v2 \
+        --with pkg.jsn.cam/caddy-defender \
+        --with github.com/mholt/caddy-ratelimit \
         --with github.com/dunglas/caddy-cbrotli \
-        --with github.com/dunglas/mercure/caddy \
-        --with github.com/dunglas/vulcain/caddy \
         --with github.com/caddy-dns/vultr \
         --with github.com/caddy-dns/azure \
         --with github.com/caddy-dns/googleclouddns \
