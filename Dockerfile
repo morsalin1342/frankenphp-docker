@@ -2,10 +2,13 @@
 ARG PHP_VERSION=8.4
 # Use a build-time argument to specify the Node.js version. Defaulting to 24.
 ARG NODE_VERSION=24
+# Debian release of the base image. bookworm is the default and owns the
+# unsuffixed tags; trixie is built alongside it and only ever gets -trixie tags.
+ARG DEBIAN_RELEASE=bookworm
 
 # ==> 1. Builder Stage <==
 # This stage compiles a custom FrankenPHP binary with specific Caddy modules.
-FROM dunglas/frankenphp:builder-php${PHP_VERSION}-bookworm AS builder
+FROM dunglas/frankenphp:builder-php${PHP_VERSION}-${DEBIAN_RELEASE} AS builder
 
 # Copy xcaddy from the official Caddy builder image
 COPY --from=caddy:2.11.4-builder /usr/bin/xcaddy /usr/bin/xcaddy
@@ -45,7 +48,12 @@ RUN CGO_ENABLED=1 \
         --with github.com/darkweak/storages/simplefs/caddy
 # ==> 2. Runner Stage <==
 # This is the final image. It uses the custom binary from the builder stage.
-FROM dunglas/frankenphp:php${PHP_VERSION}-bookworm AS runner
+FROM dunglas/frankenphp:php${PHP_VERSION}-${DEBIAN_RELEASE} AS runner
+
+LABEL org.opencontainers.image.title="frankenphp" \
+      org.opencontainers.image.description="FrankenPHP with a custom Caddy build, 56 PHP extensions, Composer, WP-CLI and Node.js" \
+      org.opencontainers.image.source="https://github.com/morsalin1342/frankenphp-docker" \
+      org.opencontainers.image.licenses="MIT"
 
 # Copy the custom-built FrankenPHP binary from the builder stage
 COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
@@ -53,6 +61,7 @@ COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
 # Re-declare ARGs to be available in subsequent build stages
 ARG PHP_VERSION
 ARG NODE_VERSION
+ARG DEBIAN_RELEASE
 
 # ==> 3. Install System Dependencies & Node.js <==
 RUN set -eux; \
@@ -93,7 +102,7 @@ RUN chmod +x /usr/local/bin/install-extensions.sh && \
     rm /tmp/installable-extensions /tmp/supported-extensions
 
 # ==> 5. Install Global PHP Tools <==
-COPY --from=composer:2.10.1 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.10.2 /usr/bin/composer /usr/local/bin/composer
 ADD --chmod=0755 https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/local/bin/wp
 
 # ==> 6. Configure PHP <==

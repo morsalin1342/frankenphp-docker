@@ -32,18 +32,21 @@ services:
 
 ## Available Tags
 
-| Tag | PHP |
-|-----|-----|
-| `latest`, `8.5`, `8.5-bookworm` | 8.5 |
-| `8.4`, `8.4-bookworm` | 8.4 |
-| `8.3`, `8.3-bookworm` | 8.3 |
-| `8.2`, `8.2-bookworm` | 8.2 |
+| Tag | PHP | Base OS |
+|-----|-----|---------|
+| `latest`, `8.5`, `8.5-bookworm` | 8.5 | bookworm |
+| `8.4`, `8.4-bookworm` | 8.4 | bookworm |
+| `8.3`, `8.3-bookworm` | 8.3 | bookworm |
+| `8.2`, `8.2-bookworm` | 8.2 | bookworm |
+| `8.5-trixie` … `8.2-trixie` | 8.2–8.5 | trixie |
+
+`bookworm` owns the unsuffixed tags; append `-trixie` for Debian 13.
 
 ## What's Included
 
 - **Custom Caddy** with the OWASP Coraza WAF (CRS compiled in), rate limiting,
   AI-crawler blocking, Brotli, HTTP cache (Souin), and 6 DNS challenge providers
-- **50+ PHP extensions**: Redis, MongoDB, Swoole, Imagick, GD, Intl, AMQP, Kafka, and more
+- **50+ PHP extensions**: Redis, MongoDB, PostgreSQL, Imagick, GD, Intl, AMQP, Kafka, OpenTelemetry, and more
 - **Tools**: Composer, WP-CLI, Node.js 24, Supervisor, Cron, FFmpeg
 
 ## Customizing
@@ -60,7 +63,8 @@ COPY php.ini /usr/local/etc/php/php.ini
 
 | Image / Tool | Description |
 |--------------|-------------|
-| [morsalin1342/php](https://hub.docker.com/r/morsalin1342/php) | Traditional PHP-FPM & CLI |
-| [morsalin1342/caddy](https://hub.docker.com/r/morsalin1342/caddy) | Standalone Caddy with plugins |
+| [morsalin1342/caddy](https://hub.docker.com/r/morsalin1342/caddy) | Standalone Caddy with WAF, rate limiting & caching |
+| [morsalin1342/php](https://hub.docker.com/r/morsalin1342/php) | Traditional PHP-FPM & CLI images |
+| [morsalin1342/nginx](https://hub.docker.com/r/morsalin1342/nginx) | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 |
 | [easydigital/frankenphp](https://hub.docker.com/r/easydigital/frankenphp) | Enterprise org mirror |
-| [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | WordPress plugin to manage Souin cache from WP Admin |
+| [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | Manage this image's Souin cache from WP Admin |

@@ -14,7 +14,7 @@ The images are automatically built and published to [Docker Hub](https://hub.doc
 |---------|-------------------------------|------------|
 | **Caddy modules** | Minimal | 16 plugins (Coraza WAF, rate limiting, Brotli, Souin cache, 6 DNS providers) |
 | **Web application firewall** | ❌ | ✅ OWASP Coraza + Core Rule Set (compiled in) |
-| **PHP extensions** | Few built-in | 50+ pre-installed (Redis, MongoDB, Swoole, Imagick, etc.) |
+| **PHP extensions** | Few built-in | 50+ pre-installed (Redis, MongoDB, Imagick, PostgreSQL, OpenTelemetry, etc.) |
 | **Composer** | ❌ | ✅ Latest |
 | **WP-CLI** | ❌ | ✅ Latest |
 | **Node.js** | ❌ | ✅ v24 (configurable) |
@@ -80,6 +80,11 @@ Each image is tagged with multiple schemes for flexibility:
 *   `morsalin1342/frankenphp:latest`: Always points to the most recent build of the PHP 8.5 image.
 *   `morsalin1342/frankenphp:<version>` (e.g., `morsalin1342/frankenphp:8.4`): A convenient tag for a specific major version.
 *   `morsalin1342/frankenphp:<version>-bookworm` (e.g., `morsalin1342/frankenphp:8.4-bookworm`): The full tag specifying the base OS.
+*   `morsalin1342/frankenphp:<version>-trixie` (e.g., `morsalin1342/frankenphp:8.4-trixie`): The same image on Debian 13.
+
+Every PHP version is built on **both** Debian releases. **bookworm owns the unsuffixed
+tags** — `8.4` and `latest` stay on bookworm, so nothing pinned to them changes — and trixie
+is published alongside under `-trixie` tags only.
 
 It is recommended to use a specific version tag (like `8.4-bookworm`) in production environments for stability.
 
@@ -109,9 +114,10 @@ The `frankenphp` binary is custom-compiled with the following additional Caddy m
 | Category         | Extensions                                                                    |
 |------------------|-------------------------------------------------------------------------------|
 | **Performance**  | `apcu`, `igbinary`, `memcached`, `opcache`, `redis`                             |
-| **Asynchronous** | `amqp`, `openswoole`, `pcntl`, `rdkafka`, `sockets`                             |
-| **Databases**    | `mongodb`, `mysqli`, `pdo_mysql`, `pdo_pgsql`                                   |
-| **Utilities**    | `bcmath`, `brotli`, `bz2`, `calendar`, `csv`, `ds`, `enchant`, `exif`, `ffi`, `gd`, `gettext`, `gmp`, `gnupg`, `grpc`, `http`, `imagick`, `inotify`, `intl`, `ldap`, `mailparse`, `mcrypt`, `oauth`, `protobuf`, `pspell`, `shmop`, `soap`, `ssh2`, `tidy`, `timezonedb`, `uuid`, `xmlrpc`, `xsl`, `yaml`, `zip`, `zstd` |
+| **Asynchronous** | `amqp`, `pcntl`, `rdkafka`, `sockets`                             |
+| **Databases**    | `mongodb`, `mysqli`, `pdo_mysql`, `pdo_pgsql`, `pgsql`                                   |
+| **Utilities**    | `bcmath`, `brotli`, `bz2`, `calendar`, `csv`, `ds`, `enchant`, `exif`, `ffi`, `ftp`, `gd`, `gettext`, `gmp`, `gnupg`, `grpc`, `http`, `imagick`, `inotify`, `intl`, `ldap`, `mailparse`, `mcrypt`, `oauth`, `protobuf`, `pspell`, `shmop`, `soap`, `ssh2`, `tidy`, `timezonedb`, `uuid`, `xmlrpc`, `xsl`, `yaml`, `zip`, `zstd` |
+| **Observability**| `opentelemetry`                                                                |
 | **Development**  | `pcov` (for code coverage)                                                    |
 
 ### Command-Line Utilities
@@ -152,6 +158,21 @@ A: The images include `supervisor`. You can mount your configuration in `/etc/su
 
 **Q: How do I configure HTTPS with a custom domain?**
 A: FrankenPHP's built-in Caddy server obtains TLS certificates automatically via Let's Encrypt. Specify your domain in the `Caddyfile` and ensure ports 80 and 443 are exposed.
+
+---
+
+---
+
+## Related Images & Tools
+
+Every image is published to both the personal and the organization namespace, from the same build.
+
+| Repository | Images | Description |
+|---|---|---|
+| [caddy-docker](https://github.com/morsalin1342/caddy-docker) | `morsalin1342/caddy` · `easydigital/caddy` | Standalone Caddy with WAF, rate limiting & caching |
+| [php-docker](https://github.com/morsalin1342/php-docker) | `morsalin1342/php` · `easydigital/php` | Traditional PHP-FPM & CLI images |
+| [nginx-docker](https://github.com/morsalin1342/nginx-docker) | `morsalin1342/nginx` · `easydigital/nginx` | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 |
+| [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | — | WordPress plugin to manage this image's Souin cache from WP Admin |
 
 ---
 

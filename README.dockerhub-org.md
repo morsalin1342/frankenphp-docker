@@ -47,7 +47,9 @@ example.com {
 
 ## Tags
 
-`8.5`, `8.5-bookworm`, `8.4`, `8.4-bookworm`, `8.3`, `8.3-bookworm`, `8.2`, `8.2-bookworm`, `latest` → 8.5
+`8.5`, `8.5-bookworm`, `8.5-trixie`, `8.4`, `8.4-bookworm`, `8.4-trixie`, `8.3`, `8.3-bookworm`, `8.3-trixie`, `8.2`, `8.2-bookworm`, `8.2-trixie`, `latest` → 8.5
+
+Unsuffixed tags are bookworm; append `-trixie` for Debian 13.
 
 ---
 
@@ -55,7 +57,8 @@ example.com {
 
 | Image / Tool | Description |
 |--------------|-------------|
+| [easydigital/caddy](https://hub.docker.com/r/easydigital/caddy) | Standalone Caddy with WAF, rate limiting & caching (org) |
+| [easydigital/php](https://hub.docker.com/r/easydigital/php) | Traditional PHP-FPM & CLI images (org) |
+| [easydigital/nginx](https://hub.docker.com/r/easydigital/nginx) | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 (org) |
 | [morsalin1342/frankenphp](https://hub.docker.com/r/morsalin1342/frankenphp) | Personal account mirror |
-| [easydigital/php](https://hub.docker.com/r/easydigital/php) | PHP-FPM & CLI (org) |
-| [easydigital/caddy](https://hub.docker.com/r/easydigital/caddy) | Standalone Caddy (org) |
-| [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | WordPress plugin to manage Souin cache from WP Admin |
+| [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | Manage this image's Souin cache from WP Admin |
