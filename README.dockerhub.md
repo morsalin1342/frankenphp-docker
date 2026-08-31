@@ -2,7 +2,24 @@
 
 **Maintained by [morsalin1342](https://hub.docker.com/u/morsalin1342)** · [GitHub](https://github.com/morsalin1342/frankenphp-docker)
 
-FrankenPHP is a modern PHP app server built in Go. This image bundles a custom-compiled Caddy web server, 50+ PHP extensions, and essential CLI tools — everything you need to run production PHP applications in a single container.
+[![Docker Pulls](https://img.shields.io/docker/pulls/morsalin1342/frankenphp?style=for-the-badge&logo=docker)](https://hub.docker.com/r/morsalin1342/frankenphp)
+[![Image Size](https://img.shields.io/docker/image-size/morsalin1342/frankenphp/latest?style=for-the-badge&logo=docker)](https://hub.docker.com/r/morsalin1342/frankenphp/tags)
+[![GitHub Stars](https://img.shields.io/github/stars/morsalin1342/frankenphp-docker?style=for-the-badge&logo=github)](https://github.com/morsalin1342/frankenphp-docker)
+[![License](https://img.shields.io/github/license/morsalin1342/frankenphp-docker?style=for-the-badge)](https://github.com/morsalin1342/frankenphp-docker/blob/master/LICENSE)
+
+FrankenPHP is a modern PHP app server built in Go. This image bundles a custom-compiled Caddy web server, 56 PHP extensions, and essential CLI tools — everything you need to run production PHP applications in a single container.
+
+## ✨ Why This Image?
+
+| Feature | Official image | This image |
+|---|---|---|
+| **Caddy modules** | Minimal | ✅ 16 — WAF, rate limiting, Brotli, Souin, 6 DNS |
+| **Web application firewall** | ❌ | ✅ OWASP Coraza, Core Rule Set compiled in |
+| **PHP extensions** | Few built in | ✅ 56 pre-installed |
+| **Composer / WP-CLI** | ❌ | ✅ Both |
+| **Node.js** | ❌ | ✅ v24, configurable |
+| **Supervisor + Cron** | ❌ | ✅ |
+| **Debian releases** | One | ✅ bookworm and trixie |
 
 ## Quick Start
 
@@ -46,7 +63,7 @@ services:
 
 - **Custom Caddy** with the OWASP Coraza WAF (CRS compiled in), rate limiting,
   AI-crawler blocking, Brotli, HTTP cache (Souin), and 6 DNS challenge providers
-- **50+ PHP extensions**: Redis, MongoDB, PostgreSQL, Imagick, GD, Intl, AMQP, Kafka, OpenTelemetry, and more
+- **56 PHP extensions**: Redis, MongoDB, PostgreSQL, Imagick, GD, Intl, AMQP, Kafka, OpenTelemetry, and more
 - **Tools**: Composer, WP-CLI, Node.js 24, Supervisor, Cron, FFmpeg
 
 ## Customizing
@@ -56,6 +73,17 @@ FROM morsalin1342/frankenphp:8.4
 RUN install-php-extensions xdebug
 COPY php.ini /usr/local/etc/php/php.ini
 ```
+
+## ❓ FAQ
+
+**Q: Can I add extensions?**
+A: Yes — `RUN install-php-extensions <name>` in a layer on top; the installer is already in the image.
+
+**Q: How do I run queue workers?**
+A: Supervisor is installed. Mount your config into `/etc/supervisor/conf.d/`.
+
+**Q: bookworm or trixie?**
+A: Unsuffixed tags are bookworm. Append `-trixie` for Debian 13.
 
 ---
 
@@ -68,3 +96,7 @@ COPY php.ini /usr/local/etc/php/php.ini
 | [morsalin1342/nginx](https://hub.docker.com/r/morsalin1342/nginx) | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 |
 | [easydigital/frankenphp](https://hub.docker.com/r/easydigital/frankenphp) | Enterprise org mirror |
 | [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | Manage this image's Souin cache from WP Admin |
+
+---
+
+⭐ **If this image helps you, consider giving it a star on [GitHub](https://github.com/morsalin1342/frankenphp-docker)!**

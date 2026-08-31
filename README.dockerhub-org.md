@@ -2,7 +2,24 @@
 
 **Published by [easydigital](https://hub.docker.com/u/easydigital)** · [GitHub](https://github.com/morsalin1342/frankenphp-docker)
 
-Enterprise-ready FrankenPHP images with a custom Caddy build, 50+ PHP extensions, and production tooling. Same image as `morsalin1342/frankenphp` — published here for organizational use.
+[![Docker Pulls](https://img.shields.io/docker/pulls/easydigital/frankenphp?style=for-the-badge&logo=docker)](https://hub.docker.com/r/easydigital/frankenphp)
+[![Image Size](https://img.shields.io/docker/image-size/easydigital/frankenphp/latest?style=for-the-badge&logo=docker)](https://hub.docker.com/r/easydigital/frankenphp/tags)
+[![GitHub Stars](https://img.shields.io/github/stars/morsalin1342/frankenphp-docker?style=for-the-badge&logo=github)](https://github.com/morsalin1342/frankenphp-docker)
+[![License](https://img.shields.io/github/license/morsalin1342/frankenphp-docker?style=for-the-badge)](https://github.com/morsalin1342/frankenphp-docker/blob/master/LICENSE)
+
+Enterprise-ready FrankenPHP images with a custom Caddy build, 56 PHP extensions, and production tooling. Same image as `morsalin1342/frankenphp` — published here for organizational use.
+
+## ✨ Why This Image?
+
+| Feature | Official image | This image |
+|---|---|---|
+| **Caddy modules** | Minimal | ✅ 16 — WAF, rate limiting, Brotli, Souin, 6 DNS |
+| **Web application firewall** | ❌ | ✅ OWASP Coraza, Core Rule Set compiled in |
+| **PHP extensions** | Few built in | ✅ 56 pre-installed |
+| **Composer / WP-CLI** | ❌ | ✅ Both |
+| **Node.js** | ❌ | ✅ v24, configurable |
+| **Supervisor + Cron** | ❌ | ✅ |
+| **Debian releases** | One | ✅ bookworm and trixie |
 
 ## Why Use the easydigital Registry?
 
@@ -45,11 +62,22 @@ example.com {
 }
 ```
 
-## Tags
+## Available Tags
 
 `8.5`, `8.5-bookworm`, `8.5-trixie`, `8.4`, `8.4-bookworm`, `8.4-trixie`, `8.3`, `8.3-bookworm`, `8.3-trixie`, `8.2`, `8.2-bookworm`, `8.2-trixie`, `latest` → 8.5
 
 Unsuffixed tags are bookworm; append `-trixie` for Debian 13.
+
+## ❓ FAQ
+
+**Q: Can I add extensions?**
+A: Yes — `RUN install-php-extensions <name>` in a layer on top; the installer is already in the image.
+
+**Q: How do I run queue workers?**
+A: Supervisor is installed. Mount your config into `/etc/supervisor/conf.d/`.
+
+**Q: bookworm or trixie?**
+A: Unsuffixed tags are bookworm. Append `-trixie` for Debian 13.
 
 ---
 
@@ -62,3 +90,7 @@ Unsuffixed tags are bookworm; append `-trixie` for Debian 13.
 | [easydigital/nginx](https://hub.docker.com/r/easydigital/nginx) | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 (org) |
 | [morsalin1342/frankenphp](https://hub.docker.com/r/morsalin1342/frankenphp) | Personal account mirror |
 | [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | Manage this image's Souin cache from WP Admin |
+
+---
+
+⭐ **If this image helps you, consider giving it a star on [GitHub](https://github.com/morsalin1342/frankenphp-docker)!**
