@@ -89,13 +89,15 @@ A: Unsuffixed tags are bookworm. Append `-trixie` for Debian 13.
 
 ### 🔗 Related Images & Tools
 
+<!-- BEGIN GENERATED: related (from images.yaml in the org .github repository; do not edit by hand) -->
 | Image / Tool | Description |
 |--------------|-------------|
 | [morsalin1342/caddy](https://hub.docker.com/r/morsalin1342/caddy) | Standalone Caddy with WAF, rate limiting & caching |
 | [morsalin1342/php](https://hub.docker.com/r/morsalin1342/php) | Traditional PHP-FPM & CLI images |
 | [morsalin1342/nginx](https://hub.docker.com/r/morsalin1342/nginx) | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 |
-| [easydigital/frankenphp](https://hub.docker.com/r/easydigital/frankenphp) | Enterprise org mirror |
-| [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | Manage this image's Souin cache from WP Admin |
+| [morsalin1342/apache](https://hub.docker.com/r/morsalin1342/apache) | Apache as a static server or php-fpm application server, no PHP inside |
+| [easydigital/frankenphp](https://hub.docker.com/r/easydigital/frankenphp) | Same image, organization namespace |
+<!-- END GENERATED: related -->
 
 ---
 

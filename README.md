@@ -131,13 +131,13 @@ The `frankenphp` binary is custom-compiled with the following additional Caddy m
 
 ## Configuration
 
-*   The images are pre-configured with a hardened `php.ini` for production security and performance. This includes `open_basedir` restrictions, disabled dangerous functions, and optimized memory/size limits.
+*   The images use PHP's `php.ini-production`. The repository also carries a stricter example, [`php.ini.example`](php.ini.example), with `open_basedir` restrictions, disabled dangerous functions and tighter limits. It is not applied by default: copy it to `php.ini` and mount it (see the FAQ).
 *   The server is configured by mounting a custom `Caddyfile` to `/etc/caddy/Caddyfile` inside the container.
 
 ## ❓ FAQ
 
 **Q: Can I run custom php.ini configurations?**
-A: Absolutely. You can mount your own `php.ini` file into the container:
+A: Absolutely. You can mount your own `php.ini` file into the container (start from [`php.ini.example`](php.ini.example)):
 ```yaml
     volumes:
       - ./php.ini:/usr/local/etc/php/php.ini:ro
@@ -165,14 +165,16 @@ A: FrankenPHP's built-in Caddy server obtains TLS certificates automatically via
 
 ## Related Images & Tools
 
-Every image is published to both the personal and the organization namespace, from the same build.
+<!-- BEGIN GENERATED: related (from images.yaml in the org .github repository; do not edit by hand) -->
+Every image is published under `morsalin1342` (personal) and `easydigital` (organization), from the same build.
 
 | Repository | Images | Description |
 |---|---|---|
 | [caddy-docker](https://github.com/morsalin1342/caddy-docker) | `morsalin1342/caddy` · `easydigital/caddy` | Standalone Caddy with WAF, rate limiting & caching |
 | [php-docker](https://github.com/morsalin1342/php-docker) | `morsalin1342/php` · `easydigital/php` | Traditional PHP-FPM & CLI images |
 | [nginx-docker](https://github.com/morsalin1342/nginx-docker) | `morsalin1342/nginx` · `easydigital/nginx` | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 |
-| [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | — | WordPress plugin to manage this image's Souin cache from WP Admin |
+| [apache-docker](https://github.com/morsalin1342/apache-docker) | `morsalin1342/apache` · `easydigital/apache` | Apache as a static server or php-fpm application server, no PHP inside |
+<!-- END GENERATED: related -->
 
 ---
 

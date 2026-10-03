@@ -83,13 +83,15 @@ A: Unsuffixed tags are bookworm. Append `-trixie` for Debian 13.
 
 ### 🔗 Related Images & Tools
 
+<!-- BEGIN GENERATED: related (from images.yaml in the org .github repository; do not edit by hand) -->
 | Image / Tool | Description |
 |--------------|-------------|
-| [easydigital/caddy](https://hub.docker.com/r/easydigital/caddy) | Standalone Caddy with WAF, rate limiting & caching (org) |
-| [easydigital/php](https://hub.docker.com/r/easydigital/php) | Traditional PHP-FPM & CLI images (org) |
-| [easydigital/nginx](https://hub.docker.com/r/easydigital/nginx) | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 (org) |
-| [morsalin1342/frankenphp](https://hub.docker.com/r/morsalin1342/frankenphp) | Personal account mirror |
-| [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | Manage this image's Souin cache from WP Admin |
+| [easydigital/caddy](https://hub.docker.com/r/easydigital/caddy) | Standalone Caddy with WAF, rate limiting & caching |
+| [easydigital/php](https://hub.docker.com/r/easydigital/php) | Traditional PHP-FPM & CLI images |
+| [easydigital/nginx](https://hub.docker.com/r/easydigital/nginx) | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 |
+| [easydigital/apache](https://hub.docker.com/r/easydigital/apache) | Apache as a static server or php-fpm application server, no PHP inside |
+| [morsalin1342/frankenphp](https://hub.docker.com/r/morsalin1342/frankenphp) | Same image, personal namespace |
+<!-- END GENERATED: related -->
 
 ---
 

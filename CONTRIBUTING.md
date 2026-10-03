@@ -38,7 +38,7 @@ Thanks for your interest in improving these Docker images!
 │   └── supported-extensions      # Upstream compatibility matrix (synced in CI)
 ├── scripts/
 │   └── install-extensions.sh     # Extension filtering and install script
-├── php.ini                       # Example hardened PHP config (for mounting)
+├── php.ini.example               # Example hardened PHP config (copy to php.ini and mount)
 └── .github/workflows/            # CI/CD pipeline
 ```
 
