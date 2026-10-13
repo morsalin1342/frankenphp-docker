@@ -187,7 +187,7 @@ List them in any image with `frankenphp list-modules --versions`.
 | Argument | Default | Meaning |
 |---|---|---|
 | `PHP_VERSION` | `8.4` | PHP branch: 8.2, 8.3, 8.4 or 8.5 |
-| `DEBIAN_RELEASE` | `bookworm` | `bookworm` or `trixie`; trixie images only get `-trixie` tags |
+| `DEBIAN_RELEASE` | `trixie` | `trixie` (the only one built) or `bookworm` for a PHP version without a trixie base image |
 | `NODE_VERSION` | `24` | Node.js major version |
 | `MARIADB_SERIES` | `12.3` | MariaDB client series |
 | `MARIADB_KEY_FPR` | pinned | Expected fingerprint of MariaDB's release signing key |

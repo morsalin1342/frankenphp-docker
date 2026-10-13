@@ -19,7 +19,7 @@ FrankenPHP is a modern PHP app server built in Go. This image bundles a custom-c
 | **Composer / WP-CLI** | ❌ | ✅ Both |
 | **Node.js** | ❌ | ✅ v24, configurable |
 | **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
-| **Debian releases** | One | ✅ bookworm and trixie |
+| **Debian release** | One | ✅ trixie (Debian 13) |
 
 ## Quick Start
 
@@ -51,13 +51,12 @@ services:
 
 | Tag | PHP | Base OS |
 |-----|-----|---------|
-| `latest`, `8.5`, `8.5-bookworm` | 8.5 | bookworm |
-| `8.4`, `8.4-bookworm` | 8.4 | bookworm |
-| `8.3`, `8.3-bookworm` | 8.3 | bookworm |
-| `8.2`, `8.2-bookworm` | 8.2 | bookworm |
-| `8.5-trixie` … `8.2-trixie` | 8.2–8.5 | trixie |
+| `latest`, `8.5`, `8.5-trixie` | 8.5 | trixie |
+| `8.4`, `8.4-trixie` | 8.4 | trixie |
+| `8.3`, `8.3-trixie` | 8.3 | trixie |
+| `8.2`, `8.2-trixie` | 8.2 | trixie |
 
-`bookworm` owns the unsuffixed tags; append `-trixie` for Debian 13.
+Only Debian 13 (trixie) is built, and `-trixie` tags are aliases of the unsuffixed ones. The old `-bookworm` tags stay available but are no longer updated.
 
 ## What's Included
 
@@ -84,8 +83,8 @@ A: Yes — `RUN install-php-extensions <name>` in a layer on top; the installer 
 **Q: How do I run queue workers?**
 A: Run them as separate containers from the same image with their own command; `supervisor` and `cron` are not included.
 
-**Q: bookworm or trixie?**
-A: Unsuffixed tags are bookworm. Append `-trixie` for Debian 13.
+**Q: Is there a bookworm image?**
+A: No. Only trixie is built now. Older `-bookworm` tags stay on Docker Hub but are no longer updated.
 
 ---
 

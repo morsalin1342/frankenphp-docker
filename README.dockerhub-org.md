@@ -19,7 +19,7 @@ Enterprise-ready FrankenPHP images with a custom Caddy build, 51 PHP extensions,
 | **Composer / WP-CLI** | ❌ | ✅ Both |
 | **Node.js** | ❌ | ✅ v24, configurable |
 | **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
-| **Debian releases** | One | ✅ bookworm and trixie |
+| **Debian release** | One | ✅ trixie (Debian 13) |
 
 **The full list of extensions, Caddy modules and tools, with versions and known issues, is in [EXTENSIONS.md](https://github.com/morsalin1342/frankenphp-docker/blob/master/EXTENSIONS.md).**
 
@@ -35,7 +35,7 @@ Enterprise-ready FrankenPHP images with a custom Caddy build, 51 PHP extensions,
 # production.yml
 services:
   app:
-    image: easydigital/frankenphp:8.4-bookworm
+    image: easydigital/frankenphp:8.4-trixie
     restart: always
     ports:
       - "80:80"
@@ -66,9 +66,9 @@ example.com {
 
 ## Available Tags
 
-`8.5`, `8.5-bookworm`, `8.5-trixie`, `8.4`, `8.4-bookworm`, `8.4-trixie`, `8.3`, `8.3-bookworm`, `8.3-trixie`, `8.2`, `8.2-bookworm`, `8.2-trixie`, `latest` → 8.5
+`8.5`, `8.5-trixie`, `8.4`, `8.4-trixie`, `8.3`, `8.3-trixie`, `8.2`, `8.2-trixie`, `latest` → 8.5
 
-Unsuffixed tags are bookworm; append `-trixie` for Debian 13.
+Only trixie is built; `-trixie` tags are aliases of the unsuffixed ones. Old `-bookworm` tags are no longer updated.
 
 ## ❓ FAQ
 
@@ -78,8 +78,8 @@ A: Yes — `RUN install-php-extensions <name>` in a layer on top; the installer 
 **Q: How do I run queue workers?**
 A: Run them as separate containers from the same image with their own command; `supervisor` and `cron` are not included.
 
-**Q: bookworm or trixie?**
-A: Unsuffixed tags are bookworm. Append `-trixie` for Debian 13.
+**Q: Is there a bookworm image?**
+A: No. Only trixie is built now. Older `-bookworm` tags stay on Docker Hub but are no longer updated.
 
 ---
 

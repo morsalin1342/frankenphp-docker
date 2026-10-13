@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
       matrix:
         php_version: [ '8.2', '8.3', '8.4', '8.5' ]
-        debian_release: [ 'bookworm', 'trixie' ]
+        debian_release: [ 'trixie' ]
 
     steps:
       - name: Check out the repo
@@ -69,16 +69,15 @@ jobs:
             morsalin1342/frankenphp
             easydigital/frankenphp
           # Generate tags based on the PHP version from the matrix.
-          # Example for php_version=8.4: 8.4, 8.4-bookworm
+          # Example for php_version=8.4: 8.4, 8.4-trixie
           # The 'latest' tag will only be applied to the PHP 8.5 build.
-          # bookworm owns the unsuffixed tags, so existing consumers pinned to
-          # `8.4` or `latest` keep getting bookworm and nothing breaks.
-          # trixie is published alongside it under -trixie tags only. Swapping the
-          # default later is a one-line change to the two `enable=` conditions.
+          # Only trixie is built. bookworm is built again only for a PHP version whose
+          # base image has no trixie variant. The -trixie tags stay as aliases, and the
+          # old -bookworm tags are no longer updated.
           tags: |
             type=raw,value=${{ matrix.php_version }}-${{ matrix.debian_release }}
-            type=raw,value=${{ matrix.php_version }},enable=${{ matrix.debian_release == 'bookworm' }}
-            type=raw,value=latest,enable=${{ matrix.php_version == '8.5' && matrix.debian_release == 'bookworm' }}
+            type=raw,value=${{ matrix.php_version }}
+            type=raw,value=latest,enable=${{ matrix.php_version == '8.5' }}
 
       - name: Build and push Docker image
         id: build-and-push

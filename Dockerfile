@@ -2,9 +2,9 @@
 ARG PHP_VERSION=8.4
 # Use a build-time argument to specify the Node.js version. Defaulting to 24.
 ARG NODE_VERSION=24
-# Debian release of the base image. bookworm is the default and owns the
-# unsuffixed tags; trixie is built alongside it and only ever gets -trixie tags.
-ARG DEBIAN_RELEASE=bookworm
+# Debian release of the base image. Only trixie is built; use bookworm here only
+# for a PHP version whose base image has no trixie variant.
+ARG DEBIAN_RELEASE=trixie
 # FrankenPHP release line of the base images (dunglas/frankenphp 1.13 and later
 # reload a changed config that contains php_server without crashing).
 ARG FRANKENPHP_VERSION=1.13

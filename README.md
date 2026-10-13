@@ -79,14 +79,11 @@ Each image is tagged with multiple schemes for flexibility:
 
 *   `morsalin1342/frankenphp:latest`: Always points to the most recent build of the PHP 8.5 image.
 *   `morsalin1342/frankenphp:<version>` (e.g., `morsalin1342/frankenphp:8.4`): A convenient tag for a specific major version.
-*   `morsalin1342/frankenphp:<version>-bookworm` (e.g., `morsalin1342/frankenphp:8.4-bookworm`): The full tag specifying the base OS.
-*   `morsalin1342/frankenphp:<version>-trixie` (e.g., `morsalin1342/frankenphp:8.4-trixie`): The same image on Debian 13.
+*   `morsalin1342/frankenphp:<version>-trixie` (e.g., `morsalin1342/frankenphp:8.4-trixie`): The same image with the base OS in the tag (Debian 13).
 
-Every PHP version is built on **both** Debian releases. **bookworm owns the unsuffixed
-tags** — `8.4` and `latest` stay on bookworm, so nothing pinned to them changes — and trixie
-is published alongside under `-trixie` tags only.
+Every PHP version is built on Debian 13 (trixie) only. bookworm is built again only for a PHP version whose base image has no trixie variant. The old `-bookworm` tags stay on Docker Hub but are no longer updated.
 
-It is recommended to use a specific version tag (like `8.4-bookworm`) in production environments for stability.
+It is recommended to use a specific version tag (like `8.4-trixie`) in production environments for stability.
 
 ## Included Extensions & Utilities
 
