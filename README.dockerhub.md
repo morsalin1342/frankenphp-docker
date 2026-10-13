@@ -7,7 +7,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/morsalin1342/frankenphp-docker?style=for-the-badge&logo=github)](https://github.com/morsalin1342/frankenphp-docker)
 [![License](https://img.shields.io/github/license/morsalin1342/frankenphp-docker?style=for-the-badge)](https://github.com/morsalin1342/frankenphp-docker/blob/master/LICENSE)
 
-FrankenPHP is a modern PHP app server built in Go. This image bundles a custom-compiled Caddy web server, 56 PHP extensions, and essential CLI tools — everything you need to run production PHP applications in a single container.
+FrankenPHP is a modern PHP app server built in Go. This image bundles a custom-compiled Caddy web server, 51 PHP extensions, and essential CLI tools — everything you need to run production PHP applications in a single container.
 
 ## ✨ Why This Image?
 
@@ -15,10 +15,10 @@ FrankenPHP is a modern PHP app server built in Go. This image bundles a custom-c
 |---|---|---|
 | **Caddy modules** | Minimal | ✅ 16 — WAF, rate limiting, Brotli, Souin, 6 DNS |
 | **Web application firewall** | ❌ | ✅ OWASP Coraza, Core Rule Set compiled in |
-| **PHP extensions** | Few built in | ✅ 56 pre-installed |
+| **PHP extensions** | Few built in | ✅ 51 pre-installed |
 | **Composer / WP-CLI** | ❌ | ✅ Both |
 | **Node.js** | ❌ | ✅ v24, configurable |
-| **Supervisor + Cron** | ❌ | ✅ |
+| **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
 | **Debian releases** | One | ✅ bookworm and trixie |
 
 ## Quick Start
@@ -61,10 +61,12 @@ services:
 
 ## What's Included
 
+**The full list of extensions and tools, with versions, is in [EXTENSIONS.md](https://github.com/morsalin1342/frankenphp-docker/blob/master/EXTENSIONS.md).**
+
 - **Custom Caddy** with the OWASP Coraza WAF (CRS compiled in), rate limiting,
   AI-crawler blocking, Brotli, HTTP cache (Souin), and 6 DNS challenge providers
-- **56 PHP extensions**: Redis, MongoDB, PostgreSQL, Imagick, GD, Intl, AMQP, Kafka, OpenTelemetry, and more
-- **Tools**: Composer, WP-CLI, Node.js 24, Supervisor, Cron, FFmpeg
+- **51 PHP extensions**: Redis, MongoDB, PostgreSQL, Imagick, GD, Intl, OpenTelemetry, and more
+- **Tools**: Composer, WP-CLI, Node.js 24, the MariaDB client, FFmpeg
 
 ## Customizing
 
@@ -80,7 +82,7 @@ COPY php.ini /usr/local/etc/php/php.ini
 A: Yes — `RUN install-php-extensions <name>` in a layer on top; the installer is already in the image.
 
 **Q: How do I run queue workers?**
-A: Supervisor is installed. Mount your config into `/etc/supervisor/conf.d/`.
+A: Run them as separate containers from the same image with their own command; `supervisor` and `cron` are not included.
 
 **Q: bookworm or trixie?**
 A: Unsuffixed tags are bookworm. Append `-trixie` for Debian 13.

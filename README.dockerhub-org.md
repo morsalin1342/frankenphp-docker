@@ -7,7 +7,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/morsalin1342/frankenphp-docker?style=for-the-badge&logo=github)](https://github.com/morsalin1342/frankenphp-docker)
 [![License](https://img.shields.io/github/license/morsalin1342/frankenphp-docker?style=for-the-badge)](https://github.com/morsalin1342/frankenphp-docker/blob/master/LICENSE)
 
-Enterprise-ready FrankenPHP images with a custom Caddy build, 56 PHP extensions, and production tooling. Same image as `morsalin1342/frankenphp` — published here for organizational use.
+Enterprise-ready FrankenPHP images with a custom Caddy build, 51 PHP extensions, and production tooling. Same image as `morsalin1342/frankenphp` — published here for organizational use.
 
 ## ✨ Why This Image?
 
@@ -15,11 +15,13 @@ Enterprise-ready FrankenPHP images with a custom Caddy build, 56 PHP extensions,
 |---|---|---|
 | **Caddy modules** | Minimal | ✅ 16 — WAF, rate limiting, Brotli, Souin, 6 DNS |
 | **Web application firewall** | ❌ | ✅ OWASP Coraza, Core Rule Set compiled in |
-| **PHP extensions** | Few built in | ✅ 56 pre-installed |
+| **PHP extensions** | Few built in | ✅ 51 pre-installed |
 | **Composer / WP-CLI** | ❌ | ✅ Both |
 | **Node.js** | ❌ | ✅ v24, configurable |
-| **Supervisor + Cron** | ❌ | ✅ |
+| **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
 | **Debian releases** | One | ✅ bookworm and trixie |
+
+**The full list of extensions, Caddy modules and tools, with versions and known issues, is in [EXTENSIONS.md](https://github.com/morsalin1342/frankenphp-docker/blob/master/EXTENSIONS.md).**
 
 ## Why Use the easydigital Registry?
 
@@ -74,7 +76,7 @@ Unsuffixed tags are bookworm; append `-trixie` for Debian 13.
 A: Yes — `RUN install-php-extensions <name>` in a layer on top; the installer is already in the image.
 
 **Q: How do I run queue workers?**
-A: Supervisor is installed. Mount your config into `/etc/supervisor/conf.d/`.
+A: Run them as separate containers from the same image with their own command; `supervisor` and `cron` are not included.
 
 **Q: bookworm or trixie?**
 A: Unsuffixed tags are bookworm. Append `-trixie` for Debian 13.

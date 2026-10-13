@@ -33,6 +33,7 @@ Thanks for your interest in improving these Docker images!
 ```
 .
 ├── Dockerfile                    # Main image definition
+├── EXTENSIONS.md                 # Every extension and tool, with versions (update it when the lists change)
 ├── data/
 │   ├── installable-extensions    # Extensions we want to install
 │   └── supported-extensions      # Upstream compatibility matrix (synced in CI)

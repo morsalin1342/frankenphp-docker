@@ -18,7 +18,7 @@ The images are automatically built and published to [Docker Hub](https://hub.doc
 | **Composer** | ❌ | ✅ Latest |
 | **WP-CLI** | ❌ | ✅ Latest |
 | **Node.js** | ❌ | ✅ v24 (configurable) |
-| **Supervisor + Cron** | ❌ | ✅ |
+| **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
 | **Ready to deploy** | Needs setup | `docker compose up` and you're running |
 
 ## Quick Start
@@ -96,37 +96,40 @@ These images come with a wide range of pre-installed components to minimize setu
 
 The `frankenphp` binary is custom-compiled with the following additional Caddy modules:
 
-*   **coraza**: OWASP Coraza WAF — ModSecurity/SecLang compatible, with the OWASP Core
+*   **coraza** (v2.6.2): OWASP Coraza WAF — ModSecurity/SecLang compatible, with the OWASP Core
     Rule Set compiled into the binary. Use `load_owasp_crs` and the `@`-prefixed include
     paths; there are no rule files to download or mount. Requires `order coraza_waf first`
     in the global options.
-*   **defender**: IP-range blocking for AI crawlers, cloud provider ranges and custom
+*   **defender** (v0.10.1): IP-range blocking for AI crawlers, cloud provider ranges and custom
     CIDRs. Module path is the vanity import `pkg.jsn.cam/caddy-defender`.
-*   **rate_limit**: Sliding-window rate limiting, multiple zones, keyed on any request
+*   **rate_limit** (v0.1.0): Sliding-window rate limiting, multiple zones, keyed on any request
     placeholder. Ordered before `basic_auth` by default.
-*   **cbrotli**: Brotli compression support.
-*   **souin**: HTTP Cache.
+*   **cbrotli** (v1.0.1): Brotli compression support.
+*   **souin** (v1.7.9): HTTP Cache.
 *   **DNS Challenge Providers**: `vultr`, `azure`, `googleclouddns`, `digitalocean`, `cloudflare`, `route53`.
-*   **Souin Storage Providers**: `go-redis`, `otter`, `simplefs`.
+*   **Souin Storage Providers** (v0.0.20): `go-redis`, `otter`, `simplefs`.
+
+FrankenPHP is 1.13.0 on Caddy 2.11.7. Every module is pinned to an explicit version in the `Dockerfile`; the exact versions are listed in [EXTENSIONS.md](EXTENSIONS.md).
 
 ### PHP Extensions
+
+**Every extension, Caddy module and tool, with its version and what it does, is listed in [EXTENSIONS.md](EXTENSIONS.md)**, including known issues (for example, `timezonedb` and `http` crash a configuration reload).
 
 | Category         | Extensions                                                                    |
 |------------------|-------------------------------------------------------------------------------|
 | **Performance**  | `apcu`, `igbinary`, `memcached`, `opcache`, `redis`                             |
-| **Asynchronous** | `amqp`, `pcntl`, `rdkafka`, `sockets`                             |
+| **Asynchronous** | `pcntl`, `sockets`                                                |
 | **Databases**    | `mongodb`, `mysqli`, `pdo_mysql`, `pdo_pgsql`, `pgsql`                                   |
-| **Utilities**    | `bcmath`, `brotli`, `bz2`, `calendar`, `csv`, `ds`, `enchant`, `exif`, `ffi`, `ftp`, `gd`, `gettext`, `gmp`, `gnupg`, `grpc`, `http`, `imagick`, `inotify`, `intl`, `ldap`, `mailparse`, `mcrypt`, `oauth`, `protobuf`, `pspell`, `shmop`, `soap`, `ssh2`, `tidy`, `timezonedb`, `uuid`, `xmlrpc`, `xsl`, `yaml`, `zip`, `zstd` |
+| **Utilities**    | `bcmath`, `brotli`, `bz2`, `calendar`, `csv`, `ds`, `enchant`, `exif`, `ffi`, `ftp`, `gd`, `gettext`, `gmp`, `gnupg`, `http`, `imagick`, `inotify`, `intl`, `ldap`, `mailparse`, `mcrypt`, `oauth`, `pspell`, `shmop`, `soap`, `ssh2`, `tidy`, `timezonedb`, `uuid`, `xmlrpc`, `xsl`, `yaml`, `zip`, `zstd` |
 | **Observability**| `opentelemetry`                                                                |
-| **Development**  | `pcov` (for code coverage)                                                    |
 
 ### Command-Line Utilities
 
 *   **Composer**: The standard PHP dependency manager.
 *   **WP-CLI**: The official command-line tool for WordPress.
 *   **Node.js**: v24.x, for frontend asset compilation and other tasks.
-*   **Supervisor**: A process control system for managing long-running scripts.
-*   **Cron**: For scheduling recurring tasks.
+*   **MariaDB client**: `mariadb`, `mariadb-dump` and the rest, also linked as `mysql` and `mysqldump`.
+*   **Not included**: `supervisor` and `cron`; run workers and schedulers as separate containers.
 *   **Other Tools**: `curl`, `gosu`, `unzip`, `zip`, `ffmpeg`.
 
 ## Configuration
@@ -154,7 +157,7 @@ RUN install-php-extensions my-custom-extension
 A: We prioritize stability and long-term support. Node.js 24 is excellent for modern build tooling like Vite, Webpack, or TailwindCSS. You can customize the Node.js version at build time with the `NODE_VERSION` build arg.
 
 **Q: How do I manage queues or background processes?**
-A: The images include `supervisor`. You can mount your configuration in `/etc/supervisor/conf.d/` to manage worker processes.
+A: Run them as separate containers from the same image with their own command; the images no longer include `supervisor` or `cron`.
 
 **Q: How do I configure HTTPS with a custom domain?**
 A: FrankenPHP's built-in Caddy server obtains TLS certificates automatically via Let's Encrypt. Specify your domain in the `Caddyfile` and ensure ports 80 and 443 are exposed.

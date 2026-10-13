@@ -1,4 +1,3 @@
-amqp
 apcu
 bcmath
 brotli
@@ -15,7 +14,6 @@ gd
 gettext
 gmp
 gnupg
-grpc
 http
 igbinary
 imagick
@@ -32,14 +30,11 @@ oauth
 opcache
 opentelemetry
 pcntl
-pcov
 pdo_mysql
 pdo_pgsql
 pgsql
-protobuf
 pspell
 raphf
-rdkafka
 redis
 shmop
 soap
