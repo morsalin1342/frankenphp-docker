@@ -87,6 +87,21 @@ ARG MARIADB_KEY_FPR
 ARG WP_CLI_VERSION
 ARG WP_CLI_SHA256
 
+# ==> 0. Refuse a PHP below the fixed releases <==
+# CVE-2026-109618 and CVE-2026-109619 (GHSA-w8hw-w9fx-j79w, GHSA-6wmf-4rv5-p3rp) are fixed in 8.2.35, 8.3.36,
+# 8.4.27 and 8.5.12. A base image older than that fails the build instead of shipping. Raise the floor when
+# a later advisory needs it.
+RUN set -eu; \
+    case "${PHP_VERSION}" in \
+      8.2) min=8.2.35 ;; \
+      8.3) min=8.3.36 ;; \
+      8.4) min=8.4.27 ;; \
+      8.5) min=8.5.12 ;; \
+      *) echo "no security floor is set for PHP ${PHP_VERSION}"; exit 1 ;; \
+    esac; \
+    php -r 'exit(version_compare(PHP_VERSION, $argv[1], ">=") ? 0 : 1);' "$min" \
+      || { echo "PHP $(php -r 'echo PHP_VERSION;') is below the fixed release ${min}"; exit 1; }
+
 # ==> 3. Install System Dependencies & Node.js <==
 # The MariaDB client comes from MariaDB's own repository, whose key is checked
 # against a pinned fingerprint. MariaDB 11.8 and later ship no mysql-named
