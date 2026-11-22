@@ -44,6 +44,7 @@ FROM caddy:${CADDY_BUILDER_VERSION}-builder@${CADDY_BUILDER_DIGEST} AS xcaddy
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-builder-php${PHP_VERSION}-${DEBIAN_RELEASE} AS builder
 ARG SOUIN_VERSION
 ARG CADDY_BUILDER_VERSION
+ARG FRANKENPHP_VERSION
 
 # Copy xcaddy from the official Caddy builder image
 COPY --from=xcaddy /usr/bin/xcaddy /usr/bin/xcaddy
@@ -62,6 +63,9 @@ COPY --from=xcaddy /usr/bin/xcaddy /usr/bin/xcaddy
 # CADDY_VERSION pins the Caddy that xcaddy builds against. The FrankenPHP builder
 # image does not set it (the Caddy builder image does), and without it xcaddy asks
 # Go for the latest Caddy release, whatever that is on the day of the build.
+# The two FrankenPHP modules are built from the builder image's own source (./);
+# naming their version as well makes the binary's build info record that release
+# instead of whatever FrankenPHP release is the latest.
 RUN CGO_ENABLED=1 \
     CADDY_VERSION="v${CADDY_BUILDER_VERSION}" \
     XCADDY_SETCAP=1 \
@@ -70,8 +74,8 @@ RUN CGO_ENABLED=1 \
     CGO_LDFLAGS="$(php-config --ldflags) $(php-config --libs)" \
     xcaddy build \
         --output /usr/local/bin/frankenphp \
-        --with github.com/dunglas/frankenphp=./ \
-        --with github.com/dunglas/frankenphp/caddy=./caddy/ \
+        --with github.com/dunglas/frankenphp@v${FRANKENPHP_VERSION}=./ \
+        --with github.com/dunglas/frankenphp/caddy@v${FRANKENPHP_VERSION}=./caddy/ \
         --with github.com/corazawaf/coraza-caddy/v2@v2.6.2 \
         --with pkg.jsn.cam/caddy-defender@v0.10.1 \
         --with github.com/mholt/caddy-ratelimit@v0.1.0 \
