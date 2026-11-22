@@ -36,7 +36,7 @@ Thanks for your interest in improving these Docker images!
 ├── EXTENSIONS.md                 # Every extension and tool, with versions (update it when the lists change)
 ├── data/
 │   ├── installable-extensions    # Extensions we want to install
-│   └── supported-extensions      # Upstream compatibility matrix (synced in CI)
+│   └── supported-extensions      # Upstream compatibility matrix (synced in CI from the pinned installer release)
 ├── scripts/
 │   └── install-extensions.sh     # Extension filtering and install script
 ├── php.ini.example               # Example hardened PHP config (copy to php.ini and mount)

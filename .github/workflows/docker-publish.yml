@@ -44,9 +44,16 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v7
 
+      # The list comes from the same installer release the Dockerfile copies
+      # install-php-extensions from, not from the upstream default branch.
       - name: Sync supported-extensions from upstream
         run: |
-          curl -fsSL https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/data/supported-extensions \
+          IPE_VERSION=$(grep -oP 'ghcr\.io/mlocati/php-extension-installer:\K[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)
+          if [ -z "$IPE_VERSION" ]; then
+            echo "::error::No pinned php-extension-installer release in the Dockerfile."
+            exit 1
+          fi
+          curl -fsSL "https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/${IPE_VERSION}/data/supported-extensions" \
             -o data/supported-extensions
           echo "::group::Extension compatibility check"
           echo "Checking that all installable extensions exist upstream..."
