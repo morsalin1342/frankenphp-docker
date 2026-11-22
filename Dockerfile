@@ -115,6 +115,10 @@ ARG MARIADB_KEY_FPR
 ARG WP_CLI_VERSION
 ARG WP_CLI_SHA256
 
+# bash with pipefail for every RUN below, so a failing command on the left of a
+# pipe (the key fingerprint checks, the WP-CLI checksum) fails the build.
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # ==> 0. Refuse a PHP below the fixed releases <==
 # The November 2026 releases (8.2.36, 8.3.37, 8.4.28, 8.5.13) fix 14 advisories, among them
 # CVE-2026-129496, CVE-2026-129481, CVE-2026-126714 and CVE-2026-129289 (php.net/ChangeLog-8.php).
