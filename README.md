@@ -15,7 +15,7 @@ The images are built and published to [Docker Hub](https://hub.docker.com/r/mors
 
 | Feature | Official `dunglas/frankenphp` | This Image |
 |---------|-------------------------------|------------|
-| **Caddy modules** | Minimal | 16 plugins (Coraza WAF, rate limiting, Brotli, Souin cache, 6 DNS providers) |
+| **Caddy modules** | Minimal | 14 plugins (Coraza WAF, Defender IP blocking, rate limiting, Brotli, Souin cache and its 3 storages, 6 DNS providers) |
 | **Web application firewall** | ❌ | ✅ OWASP Coraza + Core Rule Set (compiled in) |
 | **PHP extensions** | 35 loaded on PHP 8.5 | 51 more installed on PHP 8.5 (Redis, MongoDB, Imagick, PostgreSQL, OpenTelemetry, etc.) |
 | **Composer** | ❌ | ✅ 2.11.2 |
