@@ -38,10 +38,24 @@ Thanks for your interest in improving these Docker images!
 │   ├── installable-extensions    # Extensions we want to install
 │   └── supported-extensions      # Upstream compatibility matrix (synced in CI from the pinned installer release)
 ├── scripts/
-│   └── install-extensions.sh     # Extension filtering and install script
+│   ├── install-extensions.sh     # Extension filtering and install script
+│   └── check-upstream.sh         # Compares the pinned versions with upstream
 ├── php.ini.example               # Example hardened PHP config (copy to php.ini and mount)
 └── .github/workflows/            # CI/CD pipeline
 ```
+
+## Keeping the pins current
+
+`scripts/check-upstream.sh` compares every version pinned in the `Dockerfile` with
+the latest upstream release: FrankenPHP and Caddy (GitHub releases), the Caddy
+builder image digest (Docker Hub), the PHP security floors (php.net; only a newer
+security release counts), Node.js in the `NODE_VERSION` line (nodejs.org), npm (the
+npm registry), Composer, WP-CLI and the PHP extension installer (GitHub releases),
+and each `--with` Caddy plugin (the Go module proxy). It exits non-zero and lists
+what is behind. The `Upstream check` workflow runs it every Monday and can be run
+by hand; it changes nothing, so moving a pin is still a commit of its own. Run it
+locally with `bash scripts/check-upstream.sh` (set `GITHUB_TOKEN` to avoid the
+GitHub API's anonymous rate limit). Dependabot moves the workflow actions.
 
 ## Code Style
 - Keep the Dockerfile readable with clear section headers
