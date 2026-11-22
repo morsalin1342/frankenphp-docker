@@ -6,6 +6,7 @@ on:
     branches: [ "master" ]
     paths:
       - 'Dockerfile'
+      - '.trivyignore'
       - 'scripts/**'
       - 'data/**'
       - 'README.dockerhub.md'
@@ -14,6 +15,7 @@ on:
   pull_request:
     paths:
       - 'Dockerfile'
+      - '.trivyignore'
       - 'scripts/**'
       - 'data/**'
       - '.github/workflows/docker-publish.yml'
@@ -125,14 +127,16 @@ jobs:
           cache-from: type=gha,scope=frankenphp-${{ matrix.php_version }}-${{ matrix.debian_release }}
           cache-to: type=gha,mode=max,scope=frankenphp-${{ matrix.php_version }}-${{ matrix.debian_release }}
 
-      # A fixable critical vulnerability fails the run before anything is pushed.
-      - name: Scan the image for fixable critical vulnerabilities
+      # A fixable critical or high vulnerability fails the run before anything is
+      # pushed. .trivyignore holds any waivers, each with a reason and an expiry date.
+      - name: Scan the image for fixable critical and high vulnerabilities
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: local/frankenphp:scan
           format: table
-          severity: CRITICAL
+          severity: CRITICAL,HIGH
           ignore-unfixed: true
+          trivyignores: .trivyignore
           exit-code: '1'
 
       - name: Write the SBOM

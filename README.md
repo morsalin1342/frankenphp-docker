@@ -7,7 +7,7 @@
 
 This repository contains the build instructions for a set of customized **FrankenPHP** Docker images, for PHP 8.2 to 8.5. They are built on the official `dunglas/frankenphp` base, with the `frankenphp` binary recompiled to add Caddy plugins (Coraza WAF, rate limiting, Brotli, Souin cache, 6 DNS providers), 51 PHP extensions on top of the base image's (counted on PHP 8.5), and Composer, WP-CLI, Node.js and the MariaDB client.
 
-The images are built and published to [Docker Hub](https://hub.docker.com/r/morsalin1342/frankenphp) by GitHub Actions: on a push to `master`, and once a week so PHP patch releases and Debian's security updates are picked up. A build that has a fixable critical vulnerability is not pushed.
+The images are built and published to [Docker Hub](https://hub.docker.com/r/morsalin1342/frankenphp) by GitHub Actions: on a push to `master`, and once a week so PHP patch releases and Debian's security updates are picked up. A build that has a fixable critical or high vulnerability is not pushed.
 
 **Platform:** linux/amd64 only. `morsalin1342/frankenphp` and `easydigital/frankenphp` are the same image, pushed by the same build with the same digest; pull whichever you prefer.
 
