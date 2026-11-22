@@ -1,12 +1,15 @@
-# Production-Ready FrankenPHP Docker Images with Custom Caddy Builds
+# FrankenPHP Docker Images with a Custom Caddy Build
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/morsalin1342/frankenphp.svg?style=for-the-badge&logo=docker)](https://hub.docker.com/r/morsalin1342/frankenphp)
 [![GitHub Stars](https://img.shields.io/github/stars/morsalin1342/frankenphp-docker?style=for-the-badge&logo=github)](https://github.com/morsalin1342/frankenphp-docker)
 [![License](https://img.shields.io/github/license/morsalin1342/frankenphp-docker?style=for-the-badge)](https://github.com/morsalin1342/frankenphp-docker/blob/master/LICENSE)
+[![Docker Publish](https://github.com/morsalin1342/frankenphp-docker/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/morsalin1342/frankenphp-docker/actions/workflows/docker-publish.yml)
 
-This repository contains the build instructions for a set of customized, production-ready **FrankenPHP** Docker images. They are built on the official `dunglas/frankenphp` base and include a powerful, custom-compiled Caddy web server, a comprehensive set of pre-installed PHP extensions, and common utilities to support modern PHP applications including **Laravel**, **Symfony**, and **WordPress**.
+This repository contains the build instructions for a set of customized **FrankenPHP** Docker images, for PHP 8.2 to 8.5. They are built on the official `dunglas/frankenphp` base, with the `frankenphp` binary recompiled to add Caddy plugins (Coraza WAF, rate limiting, Brotli, Souin cache, 6 DNS providers), 51 PHP extensions on top of the base image's (counted on PHP 8.5), and Composer, WP-CLI, Node.js and the MariaDB client.
 
-The images are automatically built and published to [Docker Hub](https://hub.docker.com/r/morsalin1342/frankenphp) for multiple PHP versions via GitHub Actions.
+The images are built and published to [Docker Hub](https://hub.docker.com/r/morsalin1342/frankenphp) by GitHub Actions: on a push to `master`, and once a week so PHP patch releases and Debian's security updates are picked up. A build that has a fixable critical vulnerability is not pushed.
+
+**Platform:** linux/amd64 only. `morsalin1342/frankenphp` and `easydigital/frankenphp` are the same image, pushed by the same build with the same digest; pull whichever you prefer.
 
 ## ✨ Why This Image?
 
@@ -14,12 +17,11 @@ The images are automatically built and published to [Docker Hub](https://hub.doc
 |---------|-------------------------------|------------|
 | **Caddy modules** | Minimal | 16 plugins (Coraza WAF, rate limiting, Brotli, Souin cache, 6 DNS providers) |
 | **Web application firewall** | ❌ | ✅ OWASP Coraza + Core Rule Set (compiled in) |
-| **PHP extensions** | Few built-in | 50+ pre-installed (Redis, MongoDB, Imagick, PostgreSQL, OpenTelemetry, etc.) |
-| **Composer** | ❌ | ✅ Latest |
-| **WP-CLI** | ❌ | ✅ Latest |
+| **PHP extensions** | 35 loaded on PHP 8.5 | 51 more installed on PHP 8.5 (Redis, MongoDB, Imagick, PostgreSQL, OpenTelemetry, etc.) |
+| **Composer** | ❌ | ✅ 2.10.3 |
+| **WP-CLI** | ❌ | ✅ 2.12.0 |
 | **Node.js** | ❌ | ✅ v24 (configurable) |
 | **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
-| **Ready to deploy** | Needs setup | `docker compose up` and you're running |
 
 ## Quick Start
 
@@ -29,8 +31,6 @@ Here is an example serving a simple application:
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
-
 services:
   frankenphp:
     # Replace with your desired PHP version tag
@@ -122,8 +122,8 @@ FrankenPHP is 1.13.6 on Caddy 2.11.9. Every module is pinned to an explicit vers
 
 ### Command-Line Utilities
 
-*   **Composer**: The standard PHP dependency manager.
-*   **WP-CLI**: The official command-line tool for WordPress.
+*   **Composer** 2.10.3: the PHP dependency manager.
+*   **WP-CLI** 2.12.0: the command-line tool for WordPress.
 *   **Node.js**: v24.x, for frontend asset compilation and other tasks.
 *   **MariaDB client**: `mariadb`, `mariadb-dump` and the rest, also linked as `mysql` and `mysqldump`.
 *   **Not included**: `supervisor` and `cron`; run workers and schedulers as separate containers.
@@ -137,21 +137,21 @@ FrankenPHP is 1.13.6 on Caddy 2.11.9. Every module is pinned to an explicit vers
 ## ❓ FAQ
 
 **Q: Can I run custom php.ini configurations?**
-A: Absolutely. You can mount your own `php.ini` file into the container (start from [`php.ini.example`](php.ini.example)):
+A: Yes. Mount your own `php.ini` file into the container (start from [`php.ini.example`](php.ini.example)):
 ```yaml
     volumes:
       - ./php.ini:/usr/local/etc/php/php.ini:ro
 ```
 
 **Q: How do I add extensions not in your list?**
-A: Since we use the `mlocati/php-extension-installer` utility, you can easily install any other extension via a custom `Dockerfile` layer:
+A: The image includes `install-php-extensions` (from `mlocati/docker-php-extension-installer`), so another extension is one layer in your own `Dockerfile`:
 ```dockerfile
 FROM morsalin1342/frankenphp:8.4
 RUN install-php-extensions my-custom-extension
 ```
 
 **Q: Why Node.js v24?**
-A: We prioritize stability and long-term support. Node.js 24 is excellent for modern build tooling like Vite, Webpack, or TailwindCSS. You can customize the Node.js version at build time with the `NODE_VERSION` build arg.
+A: Node.js 24 is a long-term-support line, maintained until 2028-04-30 according to the [Node.js release schedule](https://github.com/nodejs/Release). You can choose another major version at build time with the `NODE_VERSION` build arg.
 
 **Q: How do I manage queues or background processes?**
 A: Run them as separate containers from the same image with their own command; the images no longer include `supervisor` or `cron`.
@@ -160,6 +160,33 @@ A: Run them as separate containers from the same image with their own command; t
 A: FrankenPHP's built-in Caddy server obtains TLS certificates automatically via Let's Encrypt. Specify your domain in the `Caddyfile` and ensure ports 80 and 443 are exposed.
 
 ---
+
+## Licence
+
+The files in this repository are MIT ([LICENSE](LICENSE)). That licence covers the build files,
+not the software in the image, which keeps its own licences. The main components:
+
+| Component | Licence |
+|---|---|
+| FrankenPHP | MIT |
+| Caddy | Apache-2.0 |
+| Coraza, coraza-caddy and the Core Rule Set compiled into it | Apache-2.0 |
+| caddy-ratelimit | Apache-2.0 |
+| caddy-defender, caddy-cbrotli, Souin and its storages | MIT |
+| DNS providers: cloudflare | Apache-2.0 |
+| DNS providers: route53, azure, googleclouddns | MIT |
+| DNS providers: digitalocean, vultr | no licence file in their repositories at the pinned commits |
+| PHP 8.2 to 8.5 | PHP-3.01 (the PHP License) |
+| PHP extensions installed on top | each its own; PECL extensions vary |
+| Composer, WP-CLI, Node.js | MIT (Node.js's bundled dependencies keep theirs) |
+| npm | Artistic-2.0 |
+| MariaDB client programs | GPL-2.0 |
+| FFmpeg, as Debian builds it | GPL-2.0-or-later (Debian builds it with `--enable-gpl`) |
+| Debian packages from the base image and `apt-get` | their own licences |
+
+FrankenPHP's Mercure and Vulcain modules, which are AGPL-3.0, are left out of the build (the
+Dockerfile explains how). Each build also writes an SPDX SBOM, kept as an artifact of its
+workflow run, which lists each package with the licence it declares.
 
 ---
 

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   frankenphp:
     image: morsalin1342/frankenphp:8.4

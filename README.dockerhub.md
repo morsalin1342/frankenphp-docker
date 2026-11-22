@@ -1,4 +1,4 @@
-# FrankenPHP — Production-Ready PHP App Server with Custom Caddy Builds
+# FrankenPHP — PHP App Server with a Custom Caddy Build
 
 **Maintained by [morsalin1342](https://hub.docker.com/u/morsalin1342)** · [GitHub](https://github.com/morsalin1342/frankenphp-docker)
 
@@ -7,7 +7,9 @@
 [![GitHub Stars](https://img.shields.io/github/stars/morsalin1342/frankenphp-docker?style=for-the-badge&logo=github)](https://github.com/morsalin1342/frankenphp-docker)
 [![License](https://img.shields.io/github/license/morsalin1342/frankenphp-docker?style=for-the-badge)](https://github.com/morsalin1342/frankenphp-docker/blob/master/LICENSE)
 
-FrankenPHP is a modern PHP app server built in Go. This image bundles a custom-compiled Caddy web server, 51 PHP extensions, and essential CLI tools — everything you need to run production PHP applications in a single container.
+FrankenPHP is a PHP app server built on Caddy, in Go. This image recompiles it with extra Caddy plugins and adds 51 PHP extensions on top of the base image's (counted on PHP 8.5), Composer 2.10.3, WP-CLI 2.12.0, Node.js 24 and the MariaDB client, so a PHP application runs in a single container.
+
+**Platform:** linux/amd64 only. `morsalin1342/frankenphp` and `easydigital/frankenphp` are the same image, pushed by the same build with the same digest; pull whichever you prefer.
 
 ## ✨ Why This Image?
 
@@ -15,7 +17,7 @@ FrankenPHP is a modern PHP app server built in Go. This image bundles a custom-c
 |---|---|---|
 | **Caddy modules** | Minimal | ✅ 16 — WAF, rate limiting, Brotli, Souin, 6 DNS |
 | **Web application firewall** | ❌ | ✅ OWASP Coraza, Core Rule Set compiled in |
-| **PHP extensions** | Few built in | ✅ 51 pre-installed |
+| **PHP extensions** | 35 loaded on PHP 8.5 | ✅ 51 more installed on PHP 8.5 |
 | **Composer / WP-CLI** | ❌ | ✅ Both |
 | **Node.js** | ❌ | ✅ v24, configurable |
 | **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
@@ -65,7 +67,7 @@ Only Debian 13 (trixie) is built, and `-trixie` tags are aliases of the unsuffix
 - **Custom Caddy** with the OWASP Coraza WAF (CRS compiled in), rate limiting,
   AI-crawler blocking, Brotli, HTTP cache (Souin), and 6 DNS challenge providers
 - **51 PHP extensions**: Redis, MongoDB, PostgreSQL, Imagick, GD, Intl, OpenTelemetry, and more
-- **Tools**: Composer, WP-CLI, Node.js 24, the MariaDB client, FFmpeg
+- **Tools**: Composer 2.10.3, WP-CLI 2.12.0, Node.js 24, the MariaDB client, FFmpeg
 
 ## Customizing
 
@@ -85,6 +87,13 @@ A: Run them as separate containers from the same image with their own command; `
 
 **Q: Is there a bookworm image?**
 A: No. Only trixie is built now. Older `-bookworm` tags stay on Docker Hub but are no longer updated.
+
+## Licence
+
+The repository's build files are MIT. FrankenPHP (MIT), Caddy (Apache-2.0), its plugins, PHP
+(PHP License 3.01), the MariaDB client (GPL-2.0), FFmpeg as Debian builds it (GPL-2.0-or-later)
+and the other packages keep their own licences; the
+[Licence section](https://github.com/morsalin1342/frankenphp-docker#licence) lists them.
 
 ---
 

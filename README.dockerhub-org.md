@@ -1,4 +1,4 @@
-# FrankenPHP — Enterprise PHP App Server
+# FrankenPHP — PHP App Server with a Custom Caddy Build
 
 **Published by [easydigital](https://hub.docker.com/u/easydigital)** · [GitHub](https://github.com/morsalin1342/frankenphp-docker)
 
@@ -7,7 +7,9 @@
 [![GitHub Stars](https://img.shields.io/github/stars/morsalin1342/frankenphp-docker?style=for-the-badge&logo=github)](https://github.com/morsalin1342/frankenphp-docker)
 [![License](https://img.shields.io/github/license/morsalin1342/frankenphp-docker?style=for-the-badge)](https://github.com/morsalin1342/frankenphp-docker/blob/master/LICENSE)
 
-Enterprise-ready FrankenPHP images with a custom Caddy build, 51 PHP extensions, and production tooling. Same image as `morsalin1342/frankenphp` — published here for organizational use.
+FrankenPHP is a PHP app server built on Caddy, in Go. This image recompiles it with extra Caddy plugins and adds 51 PHP extensions on top of the base image's (counted on PHP 8.5), Composer 2.10.3, WP-CLI 2.12.0, Node.js 24 and the MariaDB client, so a PHP application runs in a single container.
+
+**Platform:** linux/amd64 only. `morsalin1342/frankenphp` and `easydigital/frankenphp` are the same image, pushed by the same build with the same digest; pull whichever you prefer.
 
 ## ✨ Why This Image?
 
@@ -15,19 +17,13 @@ Enterprise-ready FrankenPHP images with a custom Caddy build, 51 PHP extensions,
 |---|---|---|
 | **Caddy modules** | Minimal | ✅ 16 — WAF, rate limiting, Brotli, Souin, 6 DNS |
 | **Web application firewall** | ❌ | ✅ OWASP Coraza, Core Rule Set compiled in |
-| **PHP extensions** | Few built in | ✅ 51 pre-installed |
+| **PHP extensions** | 35 loaded on PHP 8.5 | ✅ 51 more installed on PHP 8.5 |
 | **Composer / WP-CLI** | ❌ | ✅ Both |
 | **Node.js** | ❌ | ✅ v24, configurable |
 | **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
 | **Debian release** | One | ✅ trixie (Debian 13) |
 
 **The full list of extensions, Caddy modules and tools, with versions and known issues, is in [EXTENSIONS.md](https://github.com/morsalin1342/frankenphp-docker/blob/master/EXTENSIONS.md).**
-
-## Why Use the easydigital Registry?
-
-- **Namespace isolation** — keep team pulls under the organization account
-- **Same image digest** — bit-for-bit identical to `morsalin1342/frankenphp`
-- **CI/CD friendly** — predictable tags for automated pipelines
 
 ## Deployment Example
 
@@ -80,6 +76,13 @@ A: Run them as separate containers from the same image with their own command; `
 
 **Q: Is there a bookworm image?**
 A: No. Only trixie is built now. Older `-bookworm` tags stay on Docker Hub but are no longer updated.
+
+## Licence
+
+The repository's build files are MIT. FrankenPHP (MIT), Caddy (Apache-2.0), its plugins, PHP
+(PHP License 3.01), the MariaDB client (GPL-2.0), FFmpeg as Debian builds it (GPL-2.0-or-later)
+and the other packages keep their own licences; the
+[Licence section](https://github.com/morsalin1342/frankenphp-docker#licence) lists them.
 
 ---
 
