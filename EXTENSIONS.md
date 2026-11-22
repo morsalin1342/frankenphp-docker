@@ -147,7 +147,7 @@ These are absent from the images; add them in your own image if you need them.
 | PHP | 8.5.11 (ZTS) | The tag selects the version: 8.2, 8.3, 8.4 or 8.5. |
 | Composer | 2.10.3 |  |
 | WP-CLI | 2.12.0 | A pinned release, checked against its published SHA-256 at build time (`WP_CLI_VERSION`, `WP_CLI_SHA256`). |
-| Node.js / npm | 24.22.3 / 12.2.3 | Node.js major version set by the `NODE_VERSION` build argument (default 24); npm pinned by `NPM_VERSION`. |
+| Node.js / npm | 24.22.3 / 12.2.3 | From NodeSource's apt repository (the repository key is checked against a pinned fingerprint), exact package set by `NODE_PACKAGE_VERSION` within the `NODE_VERSION` line (default 24); npm pinned by `NPM_VERSION`. |
 | MariaDB client | 12.3.3 | From MariaDB's own apt repository (series set by `MARIADB_SERIES`; the repository key is checked against a pinned fingerprint). The `mysql`, `mysqldump`, `mysqlcheck`, `mysqladmin`, `mysqlimport` and `mysqlshow` commands are small wrappers for the `mariadb*` tools, which run under their own names so that no "Deprecated program name" notice is printed. There is no MySQL client. |
 | ImageMagick | 7.1.1-43 |  |
 | ffmpeg | 7.1.5 |  |
@@ -188,7 +188,9 @@ List them in any image with `frankenphp list-modules --versions`.
 |---|---|---|
 | `PHP_VERSION` | `8.4` | PHP branch: 8.2, 8.3, 8.4 or 8.5 |
 | `DEBIAN_RELEASE` | `trixie` | `trixie` (the only one built) or `bookworm` for a PHP version without a trixie base image |
-| `NODE_VERSION` | `24` | Node.js major version |
+| `NODE_VERSION` | `24` | Node.js major version (the NodeSource repository `node_<major>.x`) |
+| `NODE_PACKAGE_VERSION` | `24.22.3-1nodesource1` | Exact NodeSource `nodejs` package; change it with `NODE_VERSION` |
+| `NODE_KEY_FPR` | pinned | Expected fingerprint of NodeSource's repository signing key |
 | `NPM_VERSION` | `12.2.3` | npm release that replaces the one bundled with Node.js |
 | `MARIADB_SERIES` | `12.3` | MariaDB client series |
 | `MARIADB_KEY_FPR` | pinned | Expected fingerprint of MariaDB's release signing key |

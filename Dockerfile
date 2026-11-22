@@ -2,6 +2,10 @@
 ARG PHP_VERSION=8.4
 # Use a build-time argument to specify the Node.js version. Defaulting to 24.
 ARG NODE_VERSION=24
+# Exact NodeSource package of that Node.js line (24.22.3, the 2026-11-10 security release; NodeSource node_24.x, 2026-11-22).
+ARG NODE_PACKAGE_VERSION=24.22.3-1nodesource1
+# Fingerprint of the NodeSource repository signing key (deb.nodesource.com/gpgkey/nodesource-repo.gpg.key).
+ARG NODE_KEY_FPR=6F71F525282841EEDAF851B42F59B5F99B1BE0B4
 # npm replaces the one bundled with Node: npm 11.19.1 (Node 24.22.3) bundles brace-expansion
 # 5.0.9 and undici 6.28.0, which carry high CVEs; npm 12.2.3 bundles undici 6.29.1 and a fixed
 # brace-expansion (CVE-2026-102276, CVE-2026-102278, CVE-2026-109383, CVE-2026-109869,
@@ -99,6 +103,8 @@ COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
 # Re-declare ARGs to be available in subsequent build stages
 ARG PHP_VERSION
 ARG NODE_VERSION
+ARG NODE_PACKAGE_VERSION
+ARG NODE_KEY_FPR
 ARG NPM_VERSION
 ARG DEBIAN_RELEASE
 ARG MARIADB_SERIES
@@ -127,6 +133,8 @@ RUN set -eu; \
 # against a pinned fingerprint. MariaDB 11.8 and later ship no mysql-named
 # commands, so small wrappers run the mariadb tools under their own names (a
 # bare symlink makes every call print a "Deprecated program name" notice).
+# Node.js comes from NodeSource's apt repository the same way: key checked against
+# a pinned fingerprint, exact package version (no installer script is piped into a shell).
 RUN set -eux; \
     export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
@@ -138,6 +146,9 @@ RUN set -eux; \
     curl -fsSL https://mariadb.org/mariadb_release_signing_key.asc -o /etc/apt/keyrings/mariadb.asc; \
     gpg --show-keys --with-colons /etc/apt/keyrings/mariadb.asc | grep -q "^fpr:::::::::${MARIADB_KEY_FPR}:"; \
     . /etc/os-release; \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key -o /etc/apt/keyrings/nodesource.asc; \
+    gpg --show-keys --with-colons /etc/apt/keyrings/nodesource.asc | grep -q "^fpr:::::::::${NODE_KEY_FPR}:"; \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_${NODE_VERSION}.x nodistro main" > /etc/apt/sources.list.d/nodesource.list; \
     echo "deb [signed-by=/etc/apt/keyrings/mariadb.asc] https://mirror.mariadb.org/repo/${MARIADB_SERIES}/debian ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/mariadb.list; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -157,17 +168,16 @@ RUN set -eux; \
         unzip \
         wget \
         zip \
-        ffmpeg; \
+        ffmpeg \
+        "nodejs=${NODE_PACKAGE_VERSION}"; \
     for t in mysql:mariadb mysqldump:mariadb-dump mysqlcheck:mariadb-check mysqladmin:mariadb-admin mysqlimport:mariadb-import mysqlshow:mariadb-show; do \
         printf '#!/bin/bash\nexec -a %s /usr/bin/%s "$@"\n' "${t#*:}" "${t#*:}" > "/usr/bin/${t%%:*}"; \
         chmod 0755 "/usr/bin/${t%%:*}"; \
     done; \
-    curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -; \
-    apt-get install -y --no-install-recommends nodejs; \
     npm install -g "npm@${NPM_VERSION}"; \
     npm cache clean --force; \
     test "$(npm -v)" = "${NPM_VERSION}"; \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /root/.npm
 
 # ==> 4. Install PHP Extensions <==
 COPY --from=ghcr.io/mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/

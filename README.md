@@ -151,7 +151,7 @@ RUN install-php-extensions my-custom-extension
 ```
 
 **Q: Why Node.js v24?**
-A: Node.js 24 is a long-term-support line, maintained until 2028-04-30 according to the [Node.js release schedule](https://github.com/nodejs/Release). You can choose another major version at build time with the `NODE_VERSION` build arg.
+A: Node.js 24 is a long-term-support line, maintained until 2028-04-30 according to the [Node.js release schedule](https://github.com/nodejs/Release). You can choose another major version at build time with the `NODE_VERSION` build arg, together with `NODE_PACKAGE_VERSION`, the exact NodeSource package of that line (for example `22.x.y-1nodesource1`).
 
 **Q: How do I manage queues or background processes?**
 A: Run them as separate containers from the same image with their own command; the images no longer include `supervisor` or `cron`.
