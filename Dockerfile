@@ -2,14 +2,20 @@
 ARG PHP_VERSION=8.4
 # Use a build-time argument to specify the Node.js version. Defaulting to 24.
 ARG NODE_VERSION=24
+# npm replaces the one bundled with Node: npm 11.19.1 (Node 24.22.3) bundles brace-expansion
+# 5.0.9 and undici 6.28.0, which carry high CVEs; npm 12.2.3 bundles undici 6.29.1 and a fixed
+# brace-expansion (CVE-2026-102276, CVE-2026-102278, CVE-2026-109383, CVE-2026-109869,
+# CVE-2026-19534, CVE-2026-87018).
+ARG NPM_VERSION=12.2.3
 # Debian release of the base image. Only trixie is built; use bookworm here only
 # for a PHP version whose base image has no trixie variant.
 ARG DEBIAN_RELEASE=trixie
-# FrankenPHP release line of the base images (dunglas/frankenphp 1.13 and later
-# reload a changed config that contains php_server without crashing).
-ARG FRANKENPHP_VERSION=1.13
+# FrankenPHP release of the builder and runner images, pinned to a patch release so
+# both stages carry the same FrankenPHP (1.13.5 fixes ten advisories, 1.13.6 brings
+# Caddy 2.11.9; 1.13 and later reload a changed config with php_server without crashing).
+ARG FRANKENPHP_VERSION=1.13.6
 # Caddy release of the xcaddy builder; it matches the Caddy inside that FrankenPHP line.
-ARG CADDY_BUILDER_VERSION=2.11.7
+ARG CADDY_BUILDER_VERSION=2.11.9
 # Souin release built into the binary; each build otherwise takes the latest.
 ARG SOUIN_VERSION=v1.7.9
 # MariaDB release series of the client tools, installed from MariaDB's own apt
@@ -27,7 +33,7 @@ FROM caddy:${CADDY_BUILDER_VERSION}-builder AS xcaddy
 
 # ==> 1. Builder Stage <==
 # This stage compiles a custom FrankenPHP binary with specific Caddy modules.
-FROM dunglas/frankenphp:builder-php${PHP_VERSION}-${DEBIAN_RELEASE} AS builder
+FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-builder-php${PHP_VERSION}-${DEBIAN_RELEASE} AS builder
 ARG SOUIN_VERSION
 
 # Copy xcaddy from the official Caddy builder image
@@ -81,6 +87,7 @@ COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
 # Re-declare ARGs to be available in subsequent build stages
 ARG PHP_VERSION
 ARG NODE_VERSION
+ARG NPM_VERSION
 ARG DEBIAN_RELEASE
 ARG MARIADB_SERIES
 ARG MARIADB_KEY_FPR
@@ -88,15 +95,16 @@ ARG WP_CLI_VERSION
 ARG WP_CLI_SHA256
 
 # ==> 0. Refuse a PHP below the fixed releases <==
-# CVE-2026-109618 and CVE-2026-109619 (GHSA-w8hw-w9fx-j79w, GHSA-6wmf-4rv5-p3rp) are fixed in 8.2.35, 8.3.36,
-# 8.4.27 and 8.5.12. A base image older than that fails the build instead of shipping. Raise the floor when
+# The November 2026 releases (8.2.36, 8.3.37, 8.4.28, 8.5.13) fix 14 advisories, among them
+# CVE-2026-129496, CVE-2026-129481, CVE-2026-126714 and CVE-2026-129289 (php.net/ChangeLog-8.php).
+# A base image older than that fails the build instead of shipping. Raise the floor when
 # a later advisory needs it.
 RUN set -eu; \
     case "${PHP_VERSION}" in \
-      8.2) min=8.2.35 ;; \
-      8.3) min=8.3.36 ;; \
-      8.4) min=8.4.27 ;; \
-      8.5) min=8.5.12 ;; \
+      8.2) min=8.2.36 ;; \
+      8.3) min=8.3.37 ;; \
+      8.4) min=8.4.28 ;; \
+      8.5) min=8.5.13 ;; \
       *) echo "no security floor is set for PHP ${PHP_VERSION}"; exit 1 ;; \
     esac; \
     php -r 'exit(version_compare(PHP_VERSION, $argv[1], ">=") ? 0 : 1);' "$min" \
@@ -110,6 +118,9 @@ RUN set -eu; \
 RUN set -eux; \
     export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
+    # Debian's security updates for everything the base image ships (zlib1g
+    # CVE-2026-85091, libbrotli1, ImageMagick, OpenEXR and others fixed in trixie).
+    apt-get upgrade -y --no-install-recommends; \
     apt-get install -y --no-install-recommends ca-certificates curl gnupg; \
     install -d -m 0755 /etc/apt/keyrings; \
     curl -fsSL https://mariadb.org/mariadb_release_signing_key.asc -o /etc/apt/keyrings/mariadb.asc; \
@@ -141,6 +152,9 @@ RUN set -eux; \
     done; \
     curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -; \
     apt-get install -y --no-install-recommends nodejs; \
+    npm install -g "npm@${NPM_VERSION}"; \
+    npm cache clean --force; \
+    test "$(npm -v)" = "${NPM_VERSION}"; \
     rm -rf /var/lib/apt/lists/*
 
 # ==> 4. Install PHP Extensions <==
