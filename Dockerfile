@@ -14,7 +14,8 @@ ARG DEBIAN_RELEASE=trixie
 # both stages carry the same FrankenPHP (1.13.5 fixes ten advisories, 1.13.6 brings
 # Caddy 2.11.9; 1.13 and later reload a changed config with php_server without crashing).
 ARG FRANKENPHP_VERSION=1.13.6
-# Caddy release of the xcaddy builder; it matches the Caddy inside that FrankenPHP line.
+# Caddy release of the xcaddy builder, and the Caddy the binary is built against (it
+# matches the Caddy that FrankenPHP line requires).
 ARG CADDY_BUILDER_VERSION=2.11.9
 # Souin release built into the binary; each build otherwise takes the latest.
 ARG SOUIN_VERSION=v1.7.9
@@ -35,6 +36,7 @@ FROM caddy:${CADDY_BUILDER_VERSION}-builder AS xcaddy
 # This stage compiles a custom FrankenPHP binary with specific Caddy modules.
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-builder-php${PHP_VERSION}-${DEBIAN_RELEASE} AS builder
 ARG SOUIN_VERSION
+ARG CADDY_BUILDER_VERSION
 
 # Copy xcaddy from the official Caddy builder image
 COPY --from=xcaddy /usr/bin/xcaddy /usr/bin/xcaddy
@@ -49,7 +51,12 @@ COPY --from=xcaddy /usr/bin/xcaddy /usr/bin/xcaddy
 # hub is compiled in whatever the plugin list says. Vulcain, also AGPL-3.0,
 # needs no tag: nothing imports its caddy package once the --with line is gone,
 # so it never registers.
+#
+# CADDY_VERSION pins the Caddy that xcaddy builds against. The FrankenPHP builder
+# image does not set it (the Caddy builder image does), and without it xcaddy asks
+# Go for the latest Caddy release, whatever that is on the day of the build.
 RUN CGO_ENABLED=1 \
+    CADDY_VERSION="v${CADDY_BUILDER_VERSION}" \
     XCADDY_SETCAP=1 \
     XCADDY_GO_BUILD_FLAGS="-ldflags='-w -s' -tags=nobadger,nomysql,nopgx,nomercure" \
     CGO_CFLAGS=$(php-config --includes) \
