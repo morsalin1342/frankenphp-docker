@@ -21,6 +21,9 @@ ARG FRANKENPHP_VERSION=1.13.6
 # Caddy release of the xcaddy builder, and the Caddy the binary is built against (it
 # matches the Caddy that FrankenPHP line requires).
 ARG CADDY_BUILDER_VERSION=2.11.9
+# Index digest of caddy:${CADDY_BUILDER_VERSION}-builder; change it with the version
+# (docker buildx imagetools inspect caddy:<version>-builder).
+ARG CADDY_BUILDER_DIGEST=sha256:f9beaa5ddbe7df6f26ebbcf9cbf44e05a1917b9bba464f0c3229038d7e2e6e13
 # Souin release built into the binary; each build otherwise takes the latest.
 ARG SOUIN_VERSION=v1.7.9
 # MariaDB release series of the client tools, installed from MariaDB's own apt
@@ -34,7 +37,7 @@ ARG WP_CLI_SHA256=ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d8
 
 # xcaddy, taken from the official Caddy builder image (a COPY --from cannot expand an ARG,
 # so it is a stage of its own).
-FROM caddy:${CADDY_BUILDER_VERSION}-builder AS xcaddy
+FROM caddy:${CADDY_BUILDER_VERSION}-builder@${CADDY_BUILDER_DIGEST} AS xcaddy
 
 # ==> 1. Builder Stage <==
 # This stage compiles a custom FrankenPHP binary with specific Caddy modules.

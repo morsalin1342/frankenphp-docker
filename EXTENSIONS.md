@@ -196,5 +196,6 @@ List them in any image with `frankenphp list-modules --versions`.
 | `MARIADB_KEY_FPR` | pinned | Expected fingerprint of MariaDB's release signing key |
 | `WP_CLI_VERSION`, `WP_CLI_SHA256` | `2.12.0`, pinned | WP-CLI release and its checksum |
 | `FRANKENPHP_VERSION` | `1.13.6` | FrankenPHP release of the builder and runner images |
-| `CADDY_BUILDER_VERSION` | `2.11.9` | Caddy release of the `xcaddy` builder |
+| `CADDY_BUILDER_VERSION` | `2.11.9` | Caddy release of the `xcaddy` builder, and the Caddy the binary is built against |
+| `CADDY_BUILDER_DIGEST` | pinned | Index digest of that `caddy:<version>-builder` image |
 | `SOUIN_VERSION` | `v1.7.9` | Souin release built into the binary |
