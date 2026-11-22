@@ -53,7 +53,7 @@ Compiled into PHP itself or shipped with it by the official base image. They can
 
 ## Installed extensions
 
-Added to the official image with [`install-php-extensions`](https://github.com/mlocati/docker-php-extension-installer). The list is [`data/installable-extensions`](data/installable-extensions); [`data/supported-extensions`](data/supported-extensions) records which PHP versions each extension supports (synced from upstream). Each one is enabled by a file named `docker-php-ext-<name>.ini` or `xx-php-ext-<name>.ini` in `/usr/local/etc/php/conf.d/`.
+Added to the official image with [`install-php-extensions`](https://github.com/mlocati/docker-php-extension-installer), release 2.13.2. The list is [`data/installable-extensions`](data/installable-extensions); [`data/supported-extensions`](data/supported-extensions) records which PHP versions each extension supports (taken from that installer release). Each one is enabled by a file named `docker-php-ext-<name>.ini` or `xx-php-ext-<name>.ini` in `/usr/local/etc/php/conf.d/`.
 
 | Extension | Version | What it does |
 |---|---|---|
