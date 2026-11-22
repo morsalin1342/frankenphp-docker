@@ -18,7 +18,7 @@ The images are built and published to [Docker Hub](https://hub.docker.com/r/mors
 | **Caddy modules** | Minimal | 16 plugins (Coraza WAF, rate limiting, Brotli, Souin cache, 6 DNS providers) |
 | **Web application firewall** | ❌ | ✅ OWASP Coraza + Core Rule Set (compiled in) |
 | **PHP extensions** | 35 loaded on PHP 8.5 | 51 more installed on PHP 8.5 (Redis, MongoDB, Imagick, PostgreSQL, OpenTelemetry, etc.) |
-| **Composer** | ❌ | ✅ 2.10.3 |
+| **Composer** | ❌ | ✅ 2.11.2 |
 | **WP-CLI** | ❌ | ✅ 2.12.0 |
 | **Node.js** | ❌ | ✅ v24 (configurable) |
 | **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
@@ -122,7 +122,7 @@ FrankenPHP is 1.13.6 on Caddy 2.11.9. Every module is pinned to an explicit vers
 
 ### Command-Line Utilities
 
-*   **Composer** 2.10.3: the PHP dependency manager.
+*   **Composer** 2.11.2: the PHP dependency manager.
 *   **WP-CLI** 2.12.0: the command-line tool for WordPress.
 *   **Node.js**: v24.x, for frontend asset compilation and other tasks.
 *   **MariaDB client**: `mariadb`, `mariadb-dump` and the rest, also linked as `mysql` and `mysqldump`.

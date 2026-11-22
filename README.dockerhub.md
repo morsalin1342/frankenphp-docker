@@ -7,7 +7,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/morsalin1342/frankenphp-docker?style=for-the-badge&logo=github)](https://github.com/morsalin1342/frankenphp-docker)
 [![License](https://img.shields.io/github/license/morsalin1342/frankenphp-docker?style=for-the-badge)](https://github.com/morsalin1342/frankenphp-docker/blob/master/LICENSE)
 
-FrankenPHP is a PHP app server built on Caddy, in Go. This image recompiles it with extra Caddy plugins and adds 51 PHP extensions on top of the base image's (counted on PHP 8.5), Composer 2.10.3, WP-CLI 2.12.0, Node.js 24 and the MariaDB client, so a PHP application runs in a single container.
+FrankenPHP is a PHP app server built on Caddy, in Go. This image recompiles it with extra Caddy plugins and adds 51 PHP extensions on top of the base image's (counted on PHP 8.5), Composer 2.11.2, WP-CLI 2.12.0, Node.js 24 and the MariaDB client, so a PHP application runs in a single container.
 
 **Platform:** linux/amd64 only. `morsalin1342/frankenphp` and `easydigital/frankenphp` are the same image, pushed by the same build with the same digest; pull whichever you prefer.
 
@@ -67,7 +67,7 @@ Only Debian 13 (trixie) is built, and `-trixie` tags are aliases of the unsuffix
 - **Custom Caddy** with the OWASP Coraza WAF (CRS compiled in), rate limiting,
   AI-crawler blocking, Brotli, HTTP cache (Souin), and 6 DNS challenge providers
 - **51 PHP extensions**: Redis, MongoDB, PostgreSQL, Imagick, GD, Intl, OpenTelemetry, and more
-- **Tools**: Composer 2.10.3, WP-CLI 2.12.0, Node.js 24, the MariaDB client, FFmpeg
+- **Tools**: Composer 2.11.2, WP-CLI 2.12.0, Node.js 24, the MariaDB client, FFmpeg
 
 ## Customizing
 
