@@ -103,6 +103,10 @@ jobs:
           file: ./Dockerfile
           load: true
           push: false
+          # Scheduled and manual runs are the security rebuilds: skip the build cache
+          # so the OS package upgrade really runs again, and pull the base image again.
+          no-cache: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+          pull: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
           # Pass the PHP version from the matrix as a build argument.
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
