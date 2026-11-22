@@ -1,6 +1,6 @@
 # What is in the FrankenPHP images
 
-The complete list of PHP extensions and tools in the `morsalin1342/frankenphp` images. The versions below were read from the **PHP 8.5.11 build on Debian 13 (trixie), 2026-10-10**; other PHP versions are built from the same list, and their extension versions differ. To see what any image has, run:
+The complete list of PHP extensions and tools in the `morsalin1342/frankenphp` images. The versions below were read from the **PHP 8.5.13 build on Debian 13 (trixie), 2026-11-22**; other PHP versions are built from the same list, and their extension versions differ. To see what any image has, run:
 
 ```bash
 docker run --rm morsalin1342/frankenphp:8.5-trixie php -m          # loaded extensions
@@ -15,41 +15,41 @@ Compiled into PHP itself or shipped with it by the official base image. They can
 
 | Extension | Version | What it does |
 |---|---|---|
-| `Core` | 8.5.11 | The PHP language core. |
-| `ctype` | 8.5.11 | Character-type checks (`ctype_alpha()` and friends). |
-| `curl` | 8.5.11 | HTTP and other transfers through libcurl. |
-| `date` | 8.5.11 | Date and time functions and classes. |
+| `Core` | 8.5.13 | The PHP language core. |
+| `ctype` | 8.5.13 | Character-type checks (`ctype_alpha()` and friends). |
+| `curl` | 8.5.13 | HTTP and other transfers through libcurl. |
+| `date` | 8.5.13 | Date and time functions and classes. |
 | `dom` | 20031129 | DOM API for XML and HTML documents. |
-| `fileinfo` | 8.5.11 | Detects file types from content (libmagic). |
-| `filter` | 8.5.11 | Input filtering and validation. |
-| `hash` | 8.5.11 | Hashing (MD5, SHA-2, SHA-3, xxHash and more). |
-| `iconv` | 8.5.11 | Character-set conversion. |
-| `json` | 8.5.11 | JSON encoding and decoding. |
-| `lexbor` | 8.5.11 | The HTML5 parser used by the DOM extension. |
-| `libxml` | 8.5.11 | libxml2 support shared by the XML extensions. |
-| `mbstring` | 8.5.11 | Multibyte string handling. |
-| `mysqlnd` | mysqlnd 8.5.11 | The native MySQL/MariaDB driver that `mysqli` and `pdo_mysql` use. |
-| `openssl` | 8.5.11 | Encryption, signatures and TLS through OpenSSL. |
-| `pcre` | 8.5.11 | Perl-compatible regular expressions. |
-| `PDO` | 8.5.11 | Database access abstraction layer. |
-| `pdo_sqlite` | 8.5.11 | SQLite driver for PDO. |
-| `Phar` | 8.5.11 | PHP archives. |
-| `posix` | 8.5.11 | POSIX process and system functions. |
-| `random` | 8.5.11 | Random number generators and `Random\Randomizer`. |
-| `readline` | 8.5.11 | Interactive command-line editing. |
-| `Reflection` | 8.5.11 | Introspection of classes, functions and extensions. |
-| `session` | 8.5.11 | Sessions. |
-| `SimpleXML` | 8.5.11 | Simple object-style access to XML. |
-| `SPL` | 8.5.11 | The Standard PHP Library (data structures, iterators, exceptions). |
-| `sqlite3` | 8.5.11 | SQLite 3 databases. |
-| `standard` | 8.5.11 | The standard function library (strings, arrays, files, math). |
-| `tokenizer` | 8.5.11 | Exposes PHP's own tokenizer. |
-| `uri` | 8.5.11 | URI parsing (RFC 3986 and WHATWG). |
-| `xml` | 8.5.11 | XML parser (expat). |
-| `xmlreader` | 8.5.11 | Pull-style XML reader. |
-| `xmlwriter` | 8.5.11 | Streaming XML writer. |
-| `Zend OPcache` | 8.5.11 | Opcode cache that keeps compiled scripts in shared memory. |
-| `zlib` | 8.5.11 | Compression (gzip, deflate) through zlib. |
+| `fileinfo` | 8.5.13 | Detects file types from content (libmagic). |
+| `filter` | 8.5.13 | Input filtering and validation. |
+| `hash` | 8.5.13 | Hashing (MD5, SHA-2, SHA-3, xxHash and more). |
+| `iconv` | 8.5.13 | Character-set conversion. |
+| `json` | 8.5.13 | JSON encoding and decoding. |
+| `lexbor` | 8.5.13 | The HTML5 parser used by the DOM extension. |
+| `libxml` | 8.5.13 | libxml2 support shared by the XML extensions. |
+| `mbstring` | 8.5.13 | Multibyte string handling. |
+| `mysqlnd` | mysqlnd 8.5.13 | The native MySQL/MariaDB driver that `mysqli` and `pdo_mysql` use. |
+| `openssl` | 8.5.13 | Encryption, signatures and TLS through OpenSSL. |
+| `pcre` | 8.5.13 | Perl-compatible regular expressions. |
+| `PDO` | 8.5.13 | Database access abstraction layer. |
+| `pdo_sqlite` | 8.5.13 | SQLite driver for PDO. |
+| `Phar` | 8.5.13 | PHP archives. |
+| `posix` | 8.5.13 | POSIX process and system functions. |
+| `random` | 8.5.13 | Random number generators and `Random\Randomizer`. |
+| `readline` | 8.5.13 | Interactive command-line editing. |
+| `Reflection` | 8.5.13 | Introspection of classes, functions and extensions. |
+| `session` | 8.5.13 | Sessions. |
+| `SimpleXML` | 8.5.13 | Simple object-style access to XML. |
+| `SPL` | 8.5.13 | The Standard PHP Library (data structures, iterators, exceptions). |
+| `sqlite3` | 8.5.13 | SQLite 3 databases. |
+| `standard` | 8.5.13 | The standard function library (strings, arrays, files, math). |
+| `tokenizer` | 8.5.13 | Exposes PHP's own tokenizer. |
+| `uri` | 8.5.13 | URI parsing (RFC 3986 and WHATWG). |
+| `xml` | 8.5.13 | XML parser (expat). |
+| `xmlreader` | 8.5.13 | Pull-style XML reader. |
+| `xmlwriter` | 8.5.13 | Streaming XML writer. |
+| `Zend OPcache` | 8.5.13 | Opcode cache that keeps compiled scripts in shared memory. |
+| `zlib` | 8.5.13 | Compression (gzip, deflate) through zlib. |
 
 ## Installed extensions
 
@@ -58,53 +58,53 @@ Added to the official image with [`install-php-extensions`](https://github.com/m
 | Extension | Version | What it does |
 |---|---|---|
 | `apcu` | 5.1.28 | In-memory user data cache shared by all requests. |
-| `bcmath` | 8.5.11 | Arbitrary-precision decimal arithmetic. |
-| `brotli` | 0.21.0 | Brotli compression (`brotli_compress()`). |
-| `bz2` | 8.5.11 | bzip2 compression. |
-| `calendar` | 8.5.11 | Calendar conversions (Gregorian, Julian, Jewish and others). |
+| `bcmath` | 8.5.13 | Arbitrary-precision decimal arithmetic. |
+| `brotli` | 0.21.1 | Brotli compression (`brotli_compress()`). |
+| `bz2` | 8.5.13 | bzip2 compression. |
+| `calendar` | 8.5.13 | Calendar conversions (Gregorian, Julian, Jewish and others). |
 | `csv` | 0.3.0 | Fast CSV reading and writing (PECL `csv`). |
 | `decimal` | 2.0.1 | Arbitrary-precision decimal numbers (PECL `decimal`). |
 | `ds` | 2.0.0 | Efficient data structures (vector, map, set, deque and others). |
-| `enchant` | 8.5.11 | Spell-checking through Enchant. |
-| `exif` | 8.5.11 | Reads image metadata (EXIF). |
-| `FFI` | 8.5.11 | Foreign function interface: call C libraries from PHP. |
-| `ftp` | 8.5.11 | FTP client. |
-| `gd` | 8.5.11 | Image creation and processing. |
-| `gettext` | 8.5.11 | Message translation through gettext. |
-| `gmp` | 8.5.11 | Arbitrary-size integers through GNU MP. |
+| `enchant` | 8.5.13 | Spell-checking through Enchant. |
+| `exif` | 8.5.13 | Reads image metadata (EXIF). |
+| `FFI` | 8.5.13 | Foreign function interface: call C libraries from PHP. |
+| `ftp` | 8.5.13 | FTP client. |
+| `gd` | 8.5.13 | Image creation and processing. |
+| `gettext` | 8.5.13 | Message translation through gettext. |
+| `gmp` | 8.5.13 | Arbitrary-size integers through GNU MP. |
 | `gnupg` | 1.5.4 | Encryption and signing through GnuPG. |
 | `http` | 4.3.1 | Extended HTTP client and server utilities (PECL `http`, `pecl_http`). Needs `raphf`. |
 | `igbinary` | 3.2.17RC1 | Compact binary serializer, also usable by `redis`, `memcached` and `apcu`. |
 | `imagick` | 3.8.1 | Image processing through ImageMagick. |
 | `inotify` | 3.0.1 | Watches files and directories for changes (Linux). |
-| `intl` | 8.5.11 | Internationalisation through ICU (locales, collation, formatting, transliteration). |
-| `ldap` | 8.5.11 | LDAP client. |
+| `intl` | 8.5.13 | Internationalisation through ICU (locales, collation, formatting, transliteration). |
+| `ldap` | 8.5.13 | LDAP client. |
 | `mailparse` | 3.2.0 | Parses and manipulates email messages. |
-| `maxminddb` | 1.14.0 | Reads MaxMind DB files (GeoIP lookups). |
+| `maxminddb` | 1.15.0 | Reads MaxMind DB files (GeoIP lookups). |
 | `mcrypt` | 1.0.9 | Legacy mcrypt encryption (deprecated; use `sodium` or `openssl`). |
 | `memcached` | 3.4.0 | Memcached client (libmemcached). |
-| `mongodb` | 2.5.4 | MongoDB driver. |
-| `mysqli` | 8.5.11 | MySQL/MariaDB client interface. |
+| `mongodb` | 2.5.8 | MongoDB driver. |
+| `mysqli` | 8.5.13 | MySQL/MariaDB client interface. |
 | `OAuth` | 2.0.10 | OAuth 1.0 consumer and provider. |
-| `opentelemetry` | 1.4.2 | OpenTelemetry auto-instrumentation hooks. |
-| `pcntl` | 8.5.11 | Process control (fork, signals). |
-| `pdo_mysql` | 8.5.11 | MySQL/MariaDB driver for PDO. |
-| `pdo_pgsql` | 8.5.11 | PostgreSQL driver for PDO. |
-| `pgsql` | 8.5.11 | PostgreSQL client interface. |
+| `opentelemetry` | 1.5.0 | OpenTelemetry auto-instrumentation hooks. |
+| `pcntl` | 8.5.13 | Process control (fork, signals). |
+| `pdo_mysql` | 8.5.13 | MySQL/MariaDB driver for PDO. |
+| `pdo_pgsql` | 8.5.13 | PostgreSQL driver for PDO. |
+| `pgsql` | 8.5.13 | PostgreSQL client interface. |
 | `pspell` | 1.0.1 | Spell-checking through pspell/aspell. |
 | `raphf` | 2.0.2 | Resource and persistent handle factory; a dependency of `http`. |
 | `redis` | 6.3.0 | Redis and Valkey client (phpredis). |
-| `shmop` | 8.5.11 | Shared-memory blocks. |
-| `soap` | 8.5.11 | SOAP client and server. |
-| `sockets` | 8.5.11 | Low-level socket interface. |
-| `sodium` | 8.5.11 | Modern cryptography through libsodium. |
-| `ssh2` | 1.5.0 | SSH2 client, SFTP and SCP (libssh2). |
-| `tidy` | 8.5.11 | Cleans and repairs HTML (HTML Tidy). |
-| `timezonedb` | 2026.5 | Updated time zone database for the `date` extension (PECL `timezonedb`). |
+| `shmop` | 8.5.13 | Shared-memory blocks. |
+| `soap` | 8.5.13 | SOAP client and server. |
+| `sockets` | 8.5.13 | Low-level socket interface. |
+| `sodium` | 8.5.13 | Modern cryptography through libsodium. |
+| `ssh2` | 1.6.1 | SSH2 client, SFTP and SCP (libssh2). |
+| `tidy` | 8.5.13 | Cleans and repairs HTML (HTML Tidy). |
+| `timezonedb` | 2026.6 | Updated time zone database for the `date` extension (PECL `timezonedb`). |
 | `uploadprogress` | 2.0.2 | Reports file-upload progress. |
 | `uuid` | 1.3.0 | UUID generation and parsing. |
 | `xmlrpc` | 1.0.0RC3 | XML-RPC encoder and decoder. |
-| `xsl` | 8.5.11 | XSLT transformations. |
+| `xsl` | 8.5.13 | XSLT transformations. |
 | `yaml` | 2.3.0 | YAML parser and emitter. |
 | `zip` | 1.22.8 | Reads and writes ZIP archives. |
 | `zstd` | 0.18.0 | Zstandard compression. |
@@ -144,11 +144,11 @@ These are absent from the images; add them in your own image if you need them.
 
 | Tool | Version | Notes |
 |---|---|---|
-| PHP | 8.5.11 (ZTS) | The tag selects the version: 8.2, 8.3, 8.4 or 8.5. |
+| PHP | 8.5.13 (ZTS) | The tag selects the version: 8.2, 8.3, 8.4 or 8.5. |
 | Composer | 2.11.2 |  |
 | WP-CLI | 2.12.0 | A pinned release, checked against its published SHA-256 at build time (`WP_CLI_VERSION`, `WP_CLI_SHA256`). |
 | Node.js / npm | 24.22.3 / 12.2.3 | From NodeSource's apt repository (the repository key is checked against a pinned fingerprint), exact package set by `NODE_PACKAGE_VERSION` within the `NODE_VERSION` line (default 24); npm pinned by `NPM_VERSION`. |
-| MariaDB client | 12.3.3 | From MariaDB's own apt repository (series set by `MARIADB_SERIES`; the repository key is checked against a pinned fingerprint). The `mysql`, `mysqldump`, `mysqlcheck`, `mysqladmin`, `mysqlimport` and `mysqlshow` commands are small wrappers for the `mariadb*` tools, which run under their own names so that no "Deprecated program name" notice is printed. There is no MySQL client. |
+| MariaDB client | 12.3.4 | From MariaDB's own apt repository (series set by `MARIADB_SERIES`; the repository key is checked against a pinned fingerprint). The `mysql`, `mysqldump`, `mysqlcheck`, `mysqladmin`, `mysqlimport` and `mysqlshow` commands are small wrappers for the `mariadb*` tools, which run under their own names so that no "Deprecated program name" notice is printed. There is no MySQL client. |
 | ImageMagick | 7.1.1-43 |  |
 | ffmpeg | 7.1.5 |  |
 | msmtp / msmtp-mta | 1.8.28 | Provide your SMTP relay in `/etc/msmtprc`; see the comment in the Dockerfile for how `mail()` is wired. |
