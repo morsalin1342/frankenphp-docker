@@ -190,7 +190,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           repository: morsalin1342/frankenphp
           readme-filepath: ./README.dockerhub.md
-          short-description: 'Production-ready FrankenPHP: custom Caddy build, 51 PHP extensions, Composer, WP-CLI, Node.js'
+          short-description: 'FrankenPHP: custom Caddy build, 51 PHP extensions, Composer, WP-CLI, Node.js'
 
       - name: Update Docker Hub description (org repo)
         uses: peter-evans/dockerhub-description@v5
@@ -199,4 +199,4 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           repository: easydigital/frankenphp
           readme-filepath: ./README.dockerhub-org.md
-          short-description: 'Production-ready FrankenPHP: custom Caddy build, 51 PHP extensions, Composer, WP-CLI, Node.js'
+          short-description: 'FrankenPHP: custom Caddy build, 51 PHP extensions, Composer, WP-CLI, Node.js'
