@@ -75,6 +75,12 @@ jobs:
           images: |
             morsalin1342/frankenphp
             easydigital/frankenphp
+          # The licence label metadata-action would add is the repository's (MIT), which
+          # does not describe the image: FrankenPHP, Caddy and its plugins, PHP, ffmpeg, the
+          # MariaDB client and the rest keep their own licences. It is set empty here; the
+          # README's Licence section lists them.
+          labels: |
+            org.opencontainers.image.licenses=
           # Generate tags based on the PHP version from the matrix.
           # Example for php_version=8.4: 8.4, 8.4-trixie
           # The 'latest' tag will only be applied to the PHP 8.5 build.

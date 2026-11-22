@@ -76,10 +76,15 @@ RUN CGO_ENABLED=1 \
 # This is the final image. It uses the custom binary from the builder stage.
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}-${DEBIAN_RELEASE} AS runner
 
+# licenses is empty on purpose. The repository's own files are MIT, but the image
+# combines software under many licences (the README's Licence section names the main
+# ones; the SBOM each build keeps lists every package), and no single SPDX expression
+# has been derived for all of it. The empty value also overrides the base image's own
+# label, MIT, which is FrankenPHP's licence and not the whole image's.
 LABEL org.opencontainers.image.title="frankenphp" \
       org.opencontainers.image.description="FrankenPHP with a custom Caddy build, 51 PHP extensions, Composer, WP-CLI, the MariaDB client and Node.js" \
       org.opencontainers.image.source="https://github.com/morsalin1342/frankenphp-docker" \
-      org.opencontainers.image.licenses="MIT"
+      org.opencontainers.image.licenses=""
 
 # Copy the custom-built FrankenPHP binary from the builder stage
 COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
