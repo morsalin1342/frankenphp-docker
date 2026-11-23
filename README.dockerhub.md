@@ -1,0 +1,116 @@
+# FrankenPHP — PHP App Server with a Custom Caddy Build
+
+**Maintained by [morsalin1342](https://hub.docker.com/u/morsalin1342)** · [GitHub](https://github.com/morsalin1342/frankenphp-docker)
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/morsalin1342/frankenphp?style=for-the-badge&logo=docker)](https://hub.docker.com/r/morsalin1342/frankenphp)
+[![Image Size](https://img.shields.io/docker/image-size/morsalin1342/frankenphp/latest?style=for-the-badge&logo=docker)](https://hub.docker.com/r/morsalin1342/frankenphp/tags)
+[![GitHub Stars](https://img.shields.io/github/stars/morsalin1342/frankenphp-docker?style=for-the-badge&logo=github)](https://github.com/morsalin1342/frankenphp-docker)
+[![License](https://img.shields.io/github/license/morsalin1342/frankenphp-docker?style=for-the-badge)](https://github.com/morsalin1342/frankenphp-docker/blob/main/LICENSE)
+
+FrankenPHP is a PHP app server built on Caddy, in Go. This image recompiles it with extra Caddy plugins and adds 51 PHP extensions on top of the base image's (counted on PHP 8.5), Composer 2.11.2, WP-CLI 2.12.0, Node.js 24 and the MariaDB client, so a PHP application runs in a single container.
+
+**Platform:** linux/amd64 only. `morsalin1342/frankenphp` on Docker Hub and `ghcr.io/morsalin1342/frankenphp` on GitHub Container Registry are the same image, pushed by the same build with the same digest; pull whichever you prefer.
+
+## ✨ Why This Image?
+
+| Feature | Official image | This image |
+|---|---|---|
+| **Caddy modules** | Minimal | ✅ 16 — WAF, rate limiting, Brotli, Souin, 6 DNS |
+| **Web application firewall** | ❌ | ✅ OWASP Coraza, Core Rule Set compiled in |
+| **PHP extensions** | 35 loaded on PHP 8.5 | ✅ 51 more installed on PHP 8.5 |
+| **Composer / WP-CLI** | ❌ | ✅ Both |
+| **Node.js** | ❌ | ✅ v24, configurable |
+| **MariaDB client** | ❌ | ✅ `mariadb` tools, also as `mysql`, `mysqldump` |
+| **Debian release** | One | ✅ trixie (Debian 13) |
+
+## Quick Start
+
+```yaml
+# docker-compose.yml
+services:
+  app:
+    image: morsalin1342/frankenphp:8.4
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./public:/app
+      - ./Caddyfile:/etc/caddy/Caddyfile
+```
+
+```caddy
+# Caddyfile
+:80 {
+    root * /app
+    encode zstd gzip
+    php_server
+    file_server
+}
+```
+
+## Available Tags
+
+| Tag | PHP | Base OS |
+|-----|-----|---------|
+| `latest`, `8.5`, `8.5-trixie` | 8.5 | trixie |
+| `8.4`, `8.4-trixie` | 8.4 | trixie |
+| `8.3`, `8.3-trixie` | 8.3 | trixie |
+| `8.2`, `8.2-trixie` | 8.2 | trixie |
+
+Only Debian 13 (trixie) is built, and `-trixie` tags are aliases of the unsuffixed ones. The old `-bookworm` tags stay available but are no longer updated.
+
+## What's Included
+
+**The full list of extensions and tools, with versions, is in [EXTENSIONS.md](https://github.com/morsalin1342/frankenphp-docker/blob/main/EXTENSIONS.md).**
+
+- **Custom Caddy** with the OWASP Coraza WAF (CRS compiled in), rate limiting,
+  AI-crawler blocking, Brotli, HTTP cache (Souin), and 6 DNS challenge providers
+- **51 PHP extensions**: Redis, MongoDB, PostgreSQL, Imagick, GD, Intl, OpenTelemetry, and more
+- **Tools**: Composer 2.11.2, WP-CLI 2.12.0, Node.js 24, the MariaDB client, FFmpeg
+
+## Customizing
+
+```dockerfile
+FROM morsalin1342/frankenphp:8.4
+RUN install-php-extensions xdebug
+COPY php.ini /usr/local/etc/php/php.ini
+```
+
+## ❓ FAQ
+
+**Q: Can I add extensions?**
+A: Yes — `RUN install-php-extensions <name>` in a layer on top; the installer is already in the image.
+
+**Q: How do I run queue workers?**
+A: Run them as separate containers from the same image with their own command; `supervisor` and `cron` are not included.
+
+**Q: Is there a bookworm image?**
+A: No. Only trixie is built now. Older `-bookworm` tags stay on Docker Hub but are no longer updated.
+
+## Licence
+
+The repository's build files are MIT. FrankenPHP (MIT), Caddy (Apache-2.0), its plugins, PHP
+(PHP License 3.01), the MariaDB client (GPL-2.0), FFmpeg as Debian builds it (GPL-2.0-or-later)
+and the other packages keep their own licences; the
+[Licence section](https://github.com/morsalin1342/frankenphp-docker#licence) lists them.
+
+---
+
+### 🔗 Related Images & Tools
+
+<!-- BEGIN GENERATED: related (from catalog.yaml in the morsalin1342/docker-images repository; do not edit by hand) -->
+| Image / Tool | Description |
+|--------------|-------------|
+| [morsalin1342/caddy](https://hub.docker.com/r/morsalin1342/caddy) | Standalone Caddy with WAF, rate limiting & caching |
+| [morsalin1342/php](https://hub.docker.com/r/morsalin1342/php) | Traditional PHP-FPM & CLI images |
+| [morsalin1342/nginx](https://hub.docker.com/r/morsalin1342/nginx) | nginx with ModSecurity 3, Brotli, zstd & GeoIP2 |
+| [morsalin1342/apache](https://hub.docker.com/r/morsalin1342/apache) | Apache httpd as a static server or php-fpm application server, no PHP inside |
+| [morsalin1342/adminer](https://hub.docker.com/r/morsalin1342/adminer) | Adminer database tool: the official image plus Alpine security updates |
+| [caddy-souin-cache-manager](https://github.com/morsalin1342/caddy-souin-cache-manager) | WordPress plugin to view and purge the Souin cache from WP Admin |
+| [ghcr.io/morsalin1342/frankenphp](https://github.com/morsalin1342/frankenphp-docker/pkgs/container/frankenphp) | Same image, GitHub Container Registry |
+<!-- END GENERATED: related -->
+
+---
+
+⭐ **If this image helps you, consider giving it a star on [GitHub](https://github.com/morsalin1342/frankenphp-docker)!**

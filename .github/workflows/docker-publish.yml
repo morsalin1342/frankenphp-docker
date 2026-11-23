@@ -1,0 +1,229 @@
+name: Docker Publish
+
+on:
+  # Run on pushes to the main branch, but only if relevant files have changed.
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'Dockerfile'
+      - '.trivyignore'
+      - 'scripts/**'
+      - 'data/**'
+      - 'README.dockerhub.md'
+  # A pull request builds and scans every image. It never logs in and never pushes.
+  pull_request:
+    paths:
+      - 'Dockerfile'
+      - '.trivyignore'
+      - 'scripts/**'
+      - 'data/**'
+      - '.github/workflows/docker-publish.yml'
+  # Weekly rebuild, so PHP patch releases, Debian security updates and a moved base
+  # image reach the published tags without waiting for a commit. It writes the same
+  # tags as a push.
+  schedule:
+    - cron: '23 7 * * 1'
+  # Allow the workflow to be triggered manually from the GitHub Actions UI.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One run at a time per branch, so a push and the weekly rebuild cannot both write
+# the latest and version tags at once. A new run waits for the running one, which
+# is not cancelled (GitHub keeps only the newest waiting run).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    if: github.repository == 'morsalin1342/frankenphp-docker'
+    # packages: write lets the job push to ghcr.io/morsalin1342 with GITHUB_TOKEN.
+    permissions:
+      contents: read
+      packages: write
+
+    # Use a matrix strategy to build for multiple PHP versions in parallel.
+    strategy:
+      fail-fast: false
+      matrix:
+        php_version: [ '8.2', '8.3', '8.4', '8.5' ]
+        debian_release: [ 'trixie' ]
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # The list comes from the same installer release the Dockerfile copies
+      # install-php-extensions from, not from the upstream default branch.
+      - name: Sync supported-extensions from upstream
+        run: |
+          IPE_VERSION=$(grep -oP 'ghcr\.io/mlocati/php-extension-installer:\K[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)
+          if [ -z "$IPE_VERSION" ]; then
+            echo "::error::No pinned php-extension-installer release in the Dockerfile."
+            exit 1
+          fi
+          curl -fsSL "https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/${IPE_VERSION}/data/supported-extensions" \
+            -o data/supported-extensions
+          echo "::group::Extension compatibility check"
+          echo "Checking that all installable extensions exist upstream..."
+          MISSING=""
+          while IFS= read -r ext; do
+            [ -z "$ext" ] && continue
+            if ! grep -q "^${ext} " data/supported-extensions; then
+              echo "::warning::Extension '${ext}' not found in upstream supported-extensions"
+              MISSING="${MISSING} ${ext}"
+            fi
+          done < data/installable-extensions
+          if [ -n "$MISSING" ]; then
+            echo "::error::Unknown extensions:${MISSING}"
+            exit 1
+          fi
+          echo "All installable extensions are valid ✓"
+          echo "::endgroup::"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: |
+            morsalin1342/frankenphp
+            ghcr.io/morsalin1342/frankenphp
+          # The licence label metadata-action would add is the repository's (MIT), which
+          # does not describe the image: FrankenPHP, Caddy and its plugins, PHP, ffmpeg, the
+          # MariaDB client and the rest keep their own licences. It is set empty here; the
+          # README's Licence section lists them.
+          labels: |
+            org.opencontainers.image.licenses=
+          # Generate tags based on the PHP version from the matrix.
+          # Example for php_version=8.4: 8.4, 8.4-trixie
+          # The 'latest' tag will only be applied to the PHP 8.5 build.
+          # Only trixie is built. bookworm is built again only for a PHP version whose
+          # base image has no trixie variant. The -trixie tags stay as aliases, and the
+          # old -bookworm tags are no longer updated.
+          tags: |
+            type=raw,value=${{ matrix.php_version }}-${{ matrix.debian_release }}
+            type=raw,value=${{ matrix.php_version }}
+            type=raw,value=latest,enable=${{ matrix.php_version == '8.5' }}
+
+      # Build into the runner's Docker daemon only. Nothing leaves the runner until
+      # the scan below has passed. The labels are the ones the push uses, so the two
+      # builds have the same inputs.
+      - name: Build the image locally
+        id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          push: false
+          # Scheduled and manual runs are the security rebuilds: skip the build cache
+          # so the OS package upgrade really runs again, and pull the base image again.
+          no-cache: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+          pull: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+          # Pass the PHP version from the matrix as a build argument.
+          build-args: |
+            PHP_VERSION=${{ matrix.php_version }}
+            DEBIAN_RELEASE=${{ matrix.debian_release }}
+          tags: local/frankenphp:scan
+          labels: ${{ steps.meta.outputs.labels }}
+          # Enable GHA caching for faster builds, one cache per matrix entry so the
+          # entries do not overwrite each other's cache.
+          cache-from: type=gha,scope=frankenphp-${{ matrix.php_version }}-${{ matrix.debian_release }}
+          cache-to: type=gha,mode=max,scope=frankenphp-${{ matrix.php_version }}-${{ matrix.debian_release }}
+
+      # A fixable critical or high vulnerability fails the run before anything is
+      # pushed. .trivyignore holds any waivers, each with a reason and an expiry date.
+      - name: Scan the image for fixable critical and high vulnerabilities
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: local/frankenphp:scan
+          format: table
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          exit-code: '1'
+
+      - name: Write the SBOM
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: local/frankenphp:scan
+          format: spdx-json
+          output: sbom.spdx.json
+          exit-code: '0'
+
+      - name: Keep the SBOM
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sbom-frankenphp-${{ matrix.php_version }}-${{ matrix.debian_release }}
+          path: sbom.spdx.json
+
+      - name: Log in to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Same context and inputs as the local build on the same builder, so every
+      # layer comes from that build's cache: what is pushed is what was scanned.
+      # One build writes every tag, so Docker Hub and GHCR get the same digest.
+      - name: Push the scanned image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          build-args: |
+            PHP_VERSION=${{ matrix.php_version }}
+            DEBIAN_RELEASE=${{ matrix.debian_release }}
+          # Use the tags generated by the metadata-action step.
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=frankenphp-${{ matrix.php_version }}-${{ matrix.debian_release }}
+
+      - name: Check the pushed layers are the scanned layers
+        if: github.event_name != 'pull_request'
+        env:
+          PUSHED: ghcr.io/morsalin1342/frankenphp:${{ matrix.php_version }}-${{ matrix.debian_release }}
+        run: |
+          scanned=$(docker image inspect local/frankenphp:scan --format '{{json .RootFS.Layers}}' | jq -c .)
+          pushed=$(docker buildx imagetools inspect "$PUSHED" --format '{{json .Image.RootFS.DiffIDs}}' | jq -c .)
+          if [ "$scanned" != "$pushed" ]; then
+            echo "::error::The pushed image's layers differ from the scanned image's layers."
+            echo "scanned: $scanned"
+            echo "pushed:  $pushed"
+            exit 1
+          fi
+
+  update_readme:
+    # This job runs only after all matrix jobs in 'build_and_publish' have succeeded,
+    # and never for a pull request.
+    needs: build_and_publish
+    runs-on: ubuntu-latest
+    if: github.repository == 'morsalin1342/frankenphp-docker' && github.event_name != 'pull_request'
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Update Docker Hub description (personal repo)
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          repository: morsalin1342/frankenphp
+          readme-filepath: ./README.dockerhub.md
+          short-description: 'FrankenPHP: custom Caddy build, 51 PHP extensions, Composer, WP-CLI, Node.js'

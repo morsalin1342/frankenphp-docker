@@ -1,0 +1,9 @@
+# The build copies only scripts/install-extensions.sh and the two lists in data/.
+# Everything else stays out of the build context.
+.git
+.github
+.idea
+*.md
+docker-compose.yml
+php.ini.example
+scripts/check-upstream.sh
