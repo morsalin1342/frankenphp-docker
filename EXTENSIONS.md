@@ -160,7 +160,7 @@ These are absent from the images; add them in your own image if you need them.
 
 | Component | Version |
 |---|---|
-| FrankenPHP | 1.13.6 |
+| FrankenPHP | 1.14.0 |
 | Caddy | 2.11.9 |
 
 The `frankenphp` binary is a custom build made with `xcaddy` (Go build tags `nobadger,nomysql,nopgx,nomercure`; the Mercure hub is left out). It keeps the file capability `cap_net_bind_service=ep`, so a container that drops all capabilities must add `NET_BIND_SERVICE` back. These Caddy modules are compiled in, each pinned to an explicit version in the Dockerfile:
@@ -168,16 +168,16 @@ The `frankenphp` binary is a custom build made with `xcaddy` (Go build tags `nob
 | Module | Version | Purpose |
 |---|---|---|
 | `http.handlers.waf` (Coraza) | 2.6.2 | Web application firewall |
-| `http.handlers.cache` and `admin.api.souin` (Souin) | 1.7.9 | HTTP cache |
-| `storages.cache.redis`, `.otter`, `.simplefs` | 0.0.20 | Souin storage back ends |
-| `http.handlers.defender` | 0.10.1 | IP and range blocking |
+| `http.handlers.cache` and `admin.api.souin` (Souin) | 1.7.10 | HTTP cache |
+| `storages.cache.redis`, `.otter`, `.simplefs` | 0.0.23 | Souin storage back ends |
+| `http.handlers.defender` | 0.10.2 | IP and range blocking |
 | `http.handlers.rate_limit` | 0.1.0 | Rate limiting |
 | `http.encoders.br` (cbrotli) | 1.0.1 | Brotli responses |
 | `dns.providers.azure` | 0.6.0 | DNS-01 ACME challenges |
 | `dns.providers.cloudflare` | 0.2.4 | DNS-01 ACME challenges |
 | `dns.providers.digitalocean` | 0.0.0-20250606074528 | DNS-01 ACME challenges |
 | `dns.providers.googleclouddns` | 1.1.0 | DNS-01 ACME challenges |
-| `dns.providers.route53` | 1.6.2 | DNS-01 ACME challenges |
+| `dns.providers.route53` | 1.6.3 | DNS-01 ACME challenges |
 | `dns.providers.vultr` | 0.0.0-20250723121531 | DNS-01 ACME challenges |
 
 List them in any image with `frankenphp list-modules --versions`.
@@ -195,7 +195,7 @@ List them in any image with `frankenphp list-modules --versions`.
 | `MARIADB_SERIES` | `12.3` | MariaDB client series |
 | `MARIADB_KEY_FPR` | pinned | Expected fingerprint of MariaDB's release signing key |
 | `WP_CLI_VERSION`, `WP_CLI_SHA256` | `2.12.0`, pinned | WP-CLI release and its checksum |
-| `FRANKENPHP_VERSION` | `1.13.6` | FrankenPHP release of the builder and runner images |
+| `FRANKENPHP_VERSION` | `1.14.0` | FrankenPHP release of the builder and runner images |
 | `CADDY_BUILDER_VERSION` | `2.11.9` | Caddy release of the `xcaddy` builder, and the Caddy the binary is built against |
 | `CADDY_BUILDER_DIGEST` | pinned | Index digest of that `caddy:<version>-builder` image |
-| `SOUIN_VERSION` | `v1.7.9` | Souin release built into the binary |
+| `SOUIN_VERSION` | `v1.7.10` | Souin release built into the binary |

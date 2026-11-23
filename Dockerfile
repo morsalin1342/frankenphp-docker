@@ -16,16 +16,18 @@ ARG NPM_VERSION=12.2.3
 ARG DEBIAN_RELEASE=trixie
 # FrankenPHP release of the builder and runner images, pinned to a patch release so
 # both stages carry the same FrankenPHP (1.13.5 fixes ten advisories, 1.13.6 brings
-# Caddy 2.11.9; 1.13 and later reload a changed config with php_server without crashing).
-ARG FRANKENPHP_VERSION=1.13.6
+# Caddy 2.11.9; 1.13 and later reload a changed config with php_server without crashing;
+# 1.14.0 takes golang.org/x/net v0.63.0 and makes 8.6 the default, which the php8.x tags
+# used here are not affected by).
+ARG FRANKENPHP_VERSION=1.14.0
 # Caddy release of the xcaddy builder, and the Caddy the binary is built against (it
 # matches the Caddy that FrankenPHP line requires).
 ARG CADDY_BUILDER_VERSION=2.11.9
 # Index digest of caddy:${CADDY_BUILDER_VERSION}-builder; change it with the version
 # (docker buildx imagetools inspect caddy:<version>-builder).
-ARG CADDY_BUILDER_DIGEST=sha256:f9beaa5ddbe7df6f26ebbcf9cbf44e05a1917b9bba464f0c3229038d7e2e6e13
+ARG CADDY_BUILDER_DIGEST=sha256:cda07fe9d82728c7ac44d844306d435e98131423dc7b114f05a8a8ecfff94707
 # Souin release built into the binary; each build otherwise takes the latest.
-ARG SOUIN_VERSION=v1.7.9
+ARG SOUIN_VERSION=v1.7.10
 # MariaDB release series of the client tools, installed from MariaDB's own apt
 # repository (the Debian client is older and conflicts with the official one).
 ARG MARIADB_SERIES=12.3
@@ -77,7 +79,7 @@ RUN CGO_ENABLED=1 \
         --with github.com/dunglas/frankenphp@v${FRANKENPHP_VERSION}=./ \
         --with github.com/dunglas/frankenphp/caddy@v${FRANKENPHP_VERSION}=./caddy/ \
         --with github.com/corazawaf/coraza-caddy/v2@v2.6.2 \
-        --with pkg.jsn.cam/caddy-defender@v0.10.1 \
+        --with pkg.jsn.cam/caddy-defender@v0.10.2 \
         --with github.com/mholt/caddy-ratelimit@v0.1.0 \
         --with github.com/dunglas/caddy-cbrotli@v1.0.1 \
         --with github.com/caddy-dns/vultr@v0.0.0-20250723121531-55bf3e9768be \
@@ -85,11 +87,11 @@ RUN CGO_ENABLED=1 \
         --with github.com/caddy-dns/googleclouddns@v1.1.0 \
         --with github.com/caddy-dns/digitalocean@v0.0.0-20250606074528-04bde2867106 \
         --with github.com/caddy-dns/cloudflare@v0.2.4 \
-        --with github.com/caddy-dns/route53@v1.6.2 \
+        --with github.com/caddy-dns/route53@v1.6.3 \
         --with github.com/darkweak/souin/plugins/caddy@${SOUIN_VERSION} \
-        --with github.com/darkweak/storages/go-redis/caddy@v0.0.20 \
-        --with github.com/darkweak/storages/otter/caddy@v0.0.20 \
-        --with github.com/darkweak/storages/simplefs/caddy@v0.0.20
+        --with github.com/darkweak/storages/go-redis/caddy@v0.0.23 \
+        --with github.com/darkweak/storages/otter/caddy@v0.0.23 \
+        --with github.com/darkweak/storages/simplefs/caddy@v0.0.23
 # ==> 2. Runner Stage <==
 # This is the final image. It uses the custom binary from the builder stage.
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}-${DEBIAN_RELEASE} AS runner
