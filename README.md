@@ -97,16 +97,16 @@ The `frankenphp` binary is custom-compiled with the following additional Caddy m
     Rule Set compiled into the binary. Use `load_owasp_crs` and the `@`-prefixed include
     paths; there are no rule files to download or mount. Requires `order coraza_waf first`
     in the global options.
-*   **defender** (v0.10.1): IP-range blocking for AI crawlers, cloud provider ranges and custom
+*   **defender** (v0.10.2): IP-range blocking for AI crawlers, cloud provider ranges and custom
     CIDRs. Module path is the vanity import `pkg.jsn.cam/caddy-defender`.
 *   **rate_limit** (v0.1.0): Sliding-window rate limiting, multiple zones, keyed on any request
     placeholder. Ordered before `basic_auth` by default.
 *   **cbrotli** (v1.0.1): Brotli compression support.
-*   **souin** (v1.7.9): HTTP Cache.
+*   **souin** (v1.7.10): HTTP Cache.
 *   **DNS Challenge Providers**: `vultr`, `azure`, `googleclouddns`, `digitalocean`, `cloudflare`, `route53`.
-*   **Souin Storage Providers** (v0.0.20): `go-redis`, `otter`, `simplefs`.
+*   **Souin Storage Providers** (v0.0.23): `go-redis`, `otter`, `simplefs`.
 
-FrankenPHP is 1.13.6 on Caddy 2.11.9. Every module is pinned to an explicit version in the `Dockerfile`; the exact versions are listed in [EXTENSIONS.md](EXTENSIONS.md).
+FrankenPHP is 1.14.0 on Caddy 2.11.9. Every module is pinned to an explicit version in the `Dockerfile`; the exact versions are listed in [EXTENSIONS.md](EXTENSIONS.md).
 
 ### PHP Extensions
 
